@@ -59,7 +59,22 @@ utils.cloneArray = function cloneArray (arr) {
   return res
 }
 
-// @todo: move to `koa-rest-router`
+/**
+ * @todo: move to `koa-rest-router`
+ * make it more flexible
+ * to be able to:
+ *
+ * ```js
+ * // /companies/:company/departments/:department/profiles
+ * // /companies/:company/departments/:department/profiles/:profile
+ * let full = router.extend(companies, departments, profiles)
+ *
+ * // /companies/:company/departments/:department/profiles/:profile/clients
+ * // /companies/:company/departments/:department/profiles/:profile/clients/:client
+ * router.extend(full, clients)
+ * ```
+ */
+
 utils.createPath = function createPath (destRoute, srcRoute, third) {
   let destParts = destRoute.path.split('/')
   let srcParts = srcRoute.path.split('/')

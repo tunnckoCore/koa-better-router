@@ -69,25 +69,50 @@ var profiles = router.resource('profiles', {
     return next()
   }]
 })
+// var clients = router.resource('clients', {
+//   index: indexMw,
+//   new: function (ctx, next) {
+//     ctx.body = 'clients: GET /clients/new'
+//     return next()
+//   },
+//   show: [function * (next) {
+//     this.body = `clients: old mw`
+//     yield next
+//   }, function (ctx, next) {
+//     ctx.body = `${ctx.body} and NEW - GET /clients/${ctx.params.client}`
+//     ctx.body += JSON.stringify(ctx.params, null, 2)
+//     return next()
+//   }]
+// })
 
 // so:
 // /companies
-// /departments
-// /profiles
+// /companies/:company
 //
-// /companies
-// /companies/111
-// /companies/:company/profiles
-// /companies/:company/profiles/3545
+// /departments
+// /departments/:department
+//
+// /profiles
+// /profiles/:profile
 //
 // /companies/:company/departments
-// /companies/:company/departments/333
+// /companies/:company/departments/:department
+//
+// /companies/:company/profiles
+// /companies/:company/profiles/:profile
+//
 // /companies/:company/departments/:department/profiles
-// /companies/:company/departments/:department/profiles/3545
-// router.extend(companies, departments)
-// router.extend(companies, profiles)
-// router.extend(companies, departments)
+// /companies/:company/departments/:department/profiles/:profile
+//
+router.extend(companies, departments)
+router.extend(companies, profiles)
 router.extend(companies, departments, profiles)
+
+// let full = router.extend(companies, departments, profiles)
+// router.extend(full, clients)
+// // => for such thing:
+// /companies/:company/departments/:department/profiles/:profile/clients
+// /companies/:company/departments/:department/profiles/:profile/clients/:client
 
 router.get('/bar', function (ctx, next) {
   ctx.body = 'bar bar bar'
