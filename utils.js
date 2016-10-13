@@ -50,6 +50,42 @@ utils.defaultController = {
   del: utils.notImplemented()
 }
 
+// @todo: move to `koa-rest-router`
+utils.cloneArray = function cloneArray (arr) {
+  let res = []
+  for (const item of arr) {
+    res.push(item)
+  }
+  return res
+}
+
+// @todo: move to `koa-rest-router`
+utils.createPath = function createPath (destRoute, srcRoute, third) {
+  let destParts = destRoute.path.split('/')
+  let srcParts = srcRoute.path.split('/')
+  let singular = third
+    ? utils.inflection.singularize(destParts[3])
+    : utils.inflection.singularize(destParts[1])
+  let len = third ? 4 : 2
+  let part3 = third ? destParts[5] : destParts[3]
+
+  if (destParts.length === len) {
+    destParts.push(`:${singular}`)
+  }
+  if (destParts[2] === 'new') {
+    destParts[2] = `:${singular}`
+  }
+  if (third && destParts[4] === 'new') {
+    destParts[4] = `:${singular}`
+  }
+  if (part3 === 'edit') {
+    destParts = destParts.slice(0, -1)
+  }
+
+  let path = destParts.concat(srcParts).filter(Boolean)
+  return '/' + path.join('/')
+}
+
 /**
  * Expose `utils` modules
  */

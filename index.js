@@ -17,6 +17,11 @@ function KoaBetterRouter (options) {
   this._routes = []
   this._endpoints = {}
   this.route = utils.pathMatch(this.options)
+
+  // @todo should be loaded automatically?
+  // what about: `.load()` if you want them?
+  // if you not load them you can just
+  // use the powerful and flexible `.addRoute`
   utils.methods.forEach(function (method) {
     this[method] = function () {
       let args = [].slice.call(arguments)
@@ -60,8 +65,8 @@ KoaBetterRouter.prototype.addRoute = function addRoute (method, pathname, fns) {
   return this
 }
 
-KoaBetterRouter.prototype.middleware = function middleware () {
-  return (ctx, next) => {
+KoaBetterRouter.prototype.middleware = function middleware (legacy) {
+  return legacy ? this.legacyMiddleware() : (ctx, next) => {
     for (const route of this._routes) {
       if (ctx.method !== route.method) {
         continue
@@ -86,6 +91,8 @@ KoaBetterRouter.prototype.middleware = function middleware () {
 KoaBetterRouter.prototype.legacyMiddleware = function legacyMiddleware () {
   return utils.convert.back(this.middleware())
 }
+
+// @todo: move to `koa-rest-router`
 KoaBetterRouter.prototype.extend = function extend (dest, src1, src2) {
   let res = []
   let len = dest.length
@@ -95,7 +102,7 @@ KoaBetterRouter.prototype.extend = function extend (dest, src1, src2) {
     let idx = i++
     let destRoute = dest[idx]
     let srcRoute = src1[idx]
-    let pathname = createPath(destRoute, srcRoute)
+    let pathname = utils.createPath(destRoute, srcRoute)
     let route = {
       path: pathname,
       match: this.route(pathname),
@@ -105,7 +112,7 @@ KoaBetterRouter.prototype.extend = function extend (dest, src1, src2) {
 
     if (src2) {
       let extraRoute = src2[idx]
-      pathname = createPath(route, extraRoute, true)
+      pathname = utils.createPath(route, extraRoute, true)
       route = {
         path: pathname,
         match: this.route(pathname),
@@ -120,67 +127,10 @@ KoaBetterRouter.prototype.extend = function extend (dest, src1, src2) {
   return res
 }
 
-function createPath (destRoute, srcRoute, third) {
-  let destParts = destRoute.path.split('/')
-  let srcParts = srcRoute.path.split('/')
-  let singular = third
-    ? utils.inflection.singularize(destParts[3])
-    : utils.inflection.singularize(destParts[1])
-  let len = third ? 4 : 2
-  let part3 = third ? destParts[5] : destParts[3]
-
-  if (destParts.length === len) {
-    destParts.push(`:${singular}`)
-  }
-  if (destParts[2] === 'new') {
-    destParts[2] = `:${singular}`
-  }
-  if (third && destParts[4] === 'new') {
-    destParts[4] = `:${singular}`
-  }
-  if (part3 === 'edit') {
-    destParts = destParts.slice(0, -1)
-  }
-
-  let path = destParts.concat(srcParts).filter(Boolean)
-  return '/' + path.join('/')
-}
-
-/**
-
-  let destParts = destRoute.path.split('/')
-  let srcParts = srcRoute.path.split('/')
-  let singular = third
-    ? utils.inflection.singularize(destParts[1])
-    : utils.inflection.singularize(destParts[3])
-
-  if (destParts.length === 2) {
-    destParts.push(`:${singular}`)
-  }
-  if (third && destParts.length === 3) {
-    destParts.push(`:${singular}`)
-  }
-  if (destParts[2] === 'new') {
-    destParts[2] = `:${singular}`
-  }
-  if (third && destParts[3] === 'new') {
-    destParts[3] = `:${singular}`
-  }
-  if (destParts[3] === 'edit') {
-    destParts = destParts.slice(0, -1)
-  }
-  if (third && destParts[4] === 'edit') {
-    destParts = destParts.slice(0, -1)
-  }
-
-  let path = destParts.concat(srcParts).filter(Boolean)
-  console.log(path)
-  return '/' + path.join('/')
-
- */
-
+// @todo: move to `koa-rest-router`
 KoaBetterRouter.prototype.resource = function resource (name, ctrl, opts) {
   if (typeof name === 'object') {
+    opts = ctrl
     ctrl = name
     name = '/'
   }
@@ -194,9 +144,12 @@ KoaBetterRouter.prototype.resource = function resource (name, ctrl, opts) {
     ? ':' + utils.inflection.singularize(name)
     : ':id'
 
-  let oldRoutes = cloneArray(this._routes)
+  let oldRoutes = utils.cloneArray(this._routes)
   this._routes = []
+  this.options = utils.extend({}, this.options, opts)
+
   ctrl = utils.extend({}, utils.defaultController, ctrl)
+
   this
     .get(utils.r(pathname), ctrl.index)
     .get(utils.r(pathname, 'new'), ctrl.new)
@@ -222,17 +175,9 @@ KoaBetterRouter.prototype.resource = function resource (name, ctrl, opts) {
     .del(utils.r(pathname, param), ctrl.delete)
     .del(utils.r(pathname, param), ctrl.del)
 
-  let srcRoutes = cloneArray(this._routes)
+  let srcRoutes = utils.cloneArray(this._routes)
   this._routes = oldRoutes.concat(srcRoutes)
   return srcRoutes
 }
 
 module.exports = KoaBetterRouter
-
-function cloneArray (arr) {
-  let res = []
-  for (const item of arr) {
-    res.push(item)
-  }
-  return res
-}
