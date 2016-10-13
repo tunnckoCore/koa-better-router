@@ -1,7 +1,7 @@
 {
   "name": "koa-better-router",
-  "version": "0.1.0",
-  "description": "Fast, simple and correct routing for koa. Support building RESTful APIs easily.",
+  "version": "0.1.2",
+  "description": "Fast, simple, smart and correct routing for [koa][], using [path-match][]. Foundation for building powerful, flexible and RESTful APIs easily.",
   "repository": "tunnckoCore/koa-better-router",
   "author": "Charlike Mike Reagent <@tunnckoCore> (http://www.tunnckocore.tk)",
   "precommit.silent": true,
