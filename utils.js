@@ -17,9 +17,7 @@ require('koa-convert', 'convert')
 require = fn // eslint-disable-line no-undef, no-native-reassign, no-global-assign
 
 utils.arrayify = function arrayify (val) {
-  if (!val) return []
-  if (Array.isArray(val)) return val
-  return [val]
+  return val ? (Array.isArray(val) ? val : [val]) : []
 }
 
 utils.createPrefix = function createPrefix (prefix, pathname) {
