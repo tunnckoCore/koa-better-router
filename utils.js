@@ -30,26 +30,6 @@ utils.createPrefix = function createPrefix (prefix, pathname) {
   return `${clean}/${path}`
 }
 
-utils.notImplemented = function notImplemented () {
-  return function (ctx, next) {
-    ctx.status = 501
-    ctx.body = 'Not Implemented'
-    return next()
-  }
-}
-
-utils.defaultController = {
-  index: utils.notImplemented(),
-  new: utils.notImplemented(),
-  create: utils.notImplemented(),
-  edit: utils.notImplemented(),
-  update: utils.notImplemented(),
-  destroy: utils.notImplemented(),
-  remove: utils.notImplemented(),
-  delete: utils.notImplemented(),
-  del: utils.notImplemented()
-}
-
 /**
  * Expose `utils` modules
  */

@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "extend-shallow": "^2.0.1",
-    "inflection": "^1.10.0",
     "is-es6-generator-function": "^1.0.0",
     "koa-convert": "^1.2.0",
     "lazy-cache": "^2.0.1",
