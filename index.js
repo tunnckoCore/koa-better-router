@@ -62,6 +62,29 @@ function KoaBetterRouter (options) {
  * If you "load" them, you will have method for each item
  * on [methods][] array - such as `.get`, `.post`, `.put` etc.
  *
+ * **Example**
+ *
+ * ```js
+ * let router = require('koa-better-router')()
+ *
+ * // all are `undefined` if you
+ * // don't `.loadMethods` them
+ * console.log(router.get)
+ * console.log(router.post)
+ * console.log(router.put)
+ * console.log(router.del)
+ * console.log(router.addRoute) // => function
+ * console.log(router.middleware) // => function
+ * console.log(router.legacyMiddleware) // => function
+ *
+ * router.loadMethods()
+ *
+ * console.log(router.get)  // => function
+ * console.log(router.post) // => function
+ * console.log(router.put)  // => function
+ * console.log(router.del)  // => function
+ * ```
+ *
  * @return {KoaBetterRouter} `this` instance for chaining
  * @api public
  */
@@ -82,7 +105,7 @@ KoaBetterRouter.prototype.loadMethods = function loadMethods () {
 /**
  * > Powerful method to do the routing if you don't want
  * to populate you router instance with dozens of methods.
- * The `method` can be just HTPP method or method
+ * The `method` can be just HTTP verb or `method`
  * plus `pathname` something like `'GET /users'`.
  * Both modern and generators middlewares can be given too,
  * and can be combined too.
@@ -223,7 +246,7 @@ KoaBetterRouter.prototype.addRoute = function addRoute (method, pathname, fns) {
  * ```
  *
  * @param  {Object|Boolean} `[opts]` optional, safely merged with options from constructor,
- *   if you pass boolean true, it understands it as `opts.legacy`,
+ *   if you pass boolean true, it understands it as `opts.legacy`
  * @return {GeneratorFunction|Function} by default modern [koa][] middleware
  *   function, but if you pass `opts.legacy: true` it will return generator function
  * @api public
@@ -283,6 +306,23 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
  * > Converts the modern middleware routes to generator functions
  * using [koa-convert][].back under the hood. It is sugar for
  * the `.middleware(true)` or `.middleware({ legacy: true })`
+ *
+ * **Example**
+ *
+ * ```js
+ * let app = require('koa') // koa v1.x
+ * let router = require('koa-better-router')()
+ *
+ * router.addRoute('GET', '/users', function * (next) {
+ *   this.body = 'Legacy KOA!'
+ *   yield next
+ * })
+ *
+ * app.use(router.legacyMiddleware())
+ * app.listen(3333, () => {
+ *   console.log('Open http://localhost:3333/users')
+ * })
+ * ```
  *
  * @return {Function|GeneratorFunction}
  * @api public

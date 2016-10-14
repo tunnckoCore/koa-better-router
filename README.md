@@ -20,8 +20,6 @@ let router = require('koa-better-router')().loadMethods()
 
 let Router = require('koa-better-router')
 let router = Router() // or new Router(), no matter
-
-router.loadMethods()
 ```
 
 ### [KoaBetterRouter](index.js#L49)
@@ -59,17 +57,36 @@ app.listen(4444, () => {
 })
 ```
 
-### [.loadMethods](index.js#L69)
-
-> Load the HTTP verbs as methods on instance. If you
-not "load" them you can just use `.addRoute` method.
-If you "load" them, you will have method for each item
-on [methods][] array - such as `.get`, `.post`, `.put` etc.
+### [.loadMethods](index.js#L92)
+> Load the HTTP verbs as methods on instance. If you not "load" them you can just use `.addRoute` method. If you "load" them, you will have method for each item on [methods][] array - such as `.get`, `.post`, `.put` etc.
 
 * `returns` **{KoaBetterRouter}** `this`: instance for chaining  
 
-### [.addRoute](index.js#L143)
-> Powerful method to do the routing if you don't want to populate you router instance with dozens of methods. The `method` can be just HTPP method or method plus `pathname` something like `'GET /users'`. Both modern and generators middlewares can be given too, and can be combined too.
+**Example**
+
+```js
+let router = require('koa-better-router')()
+
+// all are `undefined` if you
+// don't `.loadMethods` them
+console.log(router.get)
+console.log(router.post)
+console.log(router.put)
+console.log(router.del)
+console.log(router.addRoute) // => function
+console.log(router.middleware) // => function
+console.log(router.legacyMiddleware) // => function
+
+router.loadMethods()
+
+console.log(router.get)  // => function
+console.log(router.post) // => function
+console.log(router.put)  // => function
+console.log(router.del)  // => function
+```
+
+### [.addRoute](index.js#L166)
+> Powerful method to do the routing if you don't want to populate you router instance with dozens of methods. The `method` can be just HTTP verb or `method` plus `pathname` something like `'GET /users'`. Both modern and generators middlewares can be given too, and can be combined too.
 
 **Params**
 
@@ -123,12 +140,12 @@ app.listen(4290, () => {
 })
 ```
 
-### [.middleware](index.js#L232)
+### [.middleware](index.js#L255)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 **Params**
 
-* `[opts]` **{Object|Boolean}**: optional, safely merged with options from constructor, if you pass boolean true, it understands it as `opts.legacy`,    
+* `[opts]` **{Object|Boolean}**: optional, safely merged with options from constructor, if you pass boolean true, it understands it as `opts.legacy`    
 * `returns` **{GeneratorFunction|Function}**: by default modern [koa][] middleware function, but if you pass `opts.legacy: true` it will return generator function  
 
 **Example**
@@ -169,13 +186,27 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L291)
-
-> Converts the modern middleware routes to generator functions
-using [koa-convert][].back under the hood. It is sugar for
-the `.middleware(true)` or `.middleware({ legacy: true })`
+### [.legacyMiddleware](index.js#L331)
+> Converts the modern middleware routes to generator functions using [koa-convert][].back under the hood. It is sugar for the `.middleware(true)` or `.middleware({ legacy: true })`
 
 * `returns` **{Function|GeneratorFunction}**  
+
+**Example**
+
+```js
+let app = require('koa') // koa v1.x
+let router = require('koa-better-router')()
+
+router.addRoute('GET', '/users', function * (next) {
+  this.body = 'Legacy KOA!'
+  yield next
+})
+
+app.use(router.legacyMiddleware())
+app.listen(3333, () => {
+  console.log('Open http://localhost:3333/users')
+})
+```
 
 ## Related
 - [koa-bel](https://www.npmjs.com/package/koa-bel): View engine for `koa` without any deps, built to be used with… [more](https://github.com/tunnckocore/koa-bel#readme) | [homepage](https://github.com/tunnckocore/koa-bel#readme "View engine for `koa` without any deps, built to be used with `bel`. Any other engines that can be written in `.js` files would work, too.")
