@@ -27,6 +27,7 @@ test('should expose constructor', function (done) {
 
 test('should have `.addRoute`, `.middleware` and `legacyMiddlewares` methods', function (done) {
   test.strictEqual(typeof router.addRoute, 'function')
+  test.strictEqual(typeof router.createRoute, 'function')
   test.strictEqual(typeof router.middleware, 'function')
   test.strictEqual(typeof router.loadMethods, 'function')
   test.strictEqual(typeof router.legacyMiddleware, 'function')
@@ -64,7 +65,7 @@ test('should have empty `.routes` array on initialization', function (done) {
   done()
 })
 
-test('should `.addRoute` throw TypeError if `method` a string', function (done) {
+test('should `.addRoute/.createRoute` throw TypeError if `method` a string', function (done) {
   function fixture () {
     router.addRoute(123)
   }
@@ -73,22 +74,22 @@ test('should `.addRoute` throw TypeError if `method` a string', function (done) 
   done()
 })
 
-test('should `.addRoute` throw TypeError pathname not a string, array or function', function (done) {
+test('should `.addRoute/.createRoute` throw TypeError route not a string, array or function', function (done) {
   function fixture () {
     router.addRoute('GET', 123)
   }
   test.throws(fixture, TypeError)
-  test.throws(fixture, /expect `pathname` be string, array or function/)
+  test.throws(fixture, /expect `route` be string, array or function/)
   done()
 })
 
-test('should `.addRoute` be able to accept single function as `pathname`', function (done) {
+test('should `.addRoute` be able to accept single function as `route`', function (done) {
   let apiRouter = Router()
   apiRouter.addRoute('GET /users', function (ctx, next) {})
   done()
 })
 
-test('should `.addRoute` accept `pathname` to be array of middlewares', function (done) {
+test('should `.addRoute` accept `route` to be array of middlewares', function (done) {
   let apiRouter = Router()
   apiRouter.addRoute('GET /companies', [
     function (ctx, next) {
@@ -106,6 +107,27 @@ test('should `.addRoute` accept `pathname` to be array of middlewares', function
     .expect(200, /Hello world! Try/)
     .expect(/companies and/)
     .end(done)
+})
+
+test('should `.createRoute` just return route object', function (done) {
+  let router = new Router({ prefix: '/api' })
+  let route = router.createRoute('GET', '/users', [
+    function foo (ctx, next) {},
+    function bar (ctx, next) {},
+    function baz (ctx, next) {}
+  ])
+
+  test.strictEqual(router.routes.length, 0)
+
+  // route object
+  test.strictEqual(route.prefix, '/api')
+  test.strictEqual(route.path, '/api/users')
+  test.strictEqual(route.pathname, '/users')
+  test.strictEqual(route.route, '/users')
+  test.strictEqual(route.method, 'GET')
+  test.strictEqual(typeof route.match, 'function')
+  test.strictEqual(route.middlewares.length, 3)
+  done()
 })
 
 test('should `.middleware` return generator function when opts.legacy: true', function (done) {

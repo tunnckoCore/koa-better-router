@@ -103,12 +103,12 @@ KoaBetterRouter.prototype.loadMethods = function loadMethods () {
 }
 
 /**
- * > Powerful method to do the routing if you don't want
+ * > Powerful method to add `route` if you don't want
  * to populate you router instance with dozens of methods.
  * The `method` can be just HTTP verb or `method`
- * plus `pathname` something like `'GET /users'`.
+ * plus `route` something like `'GET /users'`.
  * Both modern and generators middlewares can be given too,
- * and can be combined too.
+ * and can be combined too. **Adds routes to `this.routes` array**.
  *
  * **Example**
  *
@@ -156,47 +156,65 @@ KoaBetterRouter.prototype.loadMethods = function loadMethods () {
  * ```
  *
  * @param {String} `<method>` http verb or `'GET /users'`
- * @param {String|Function} `[pathname]` for what `ctx.path` handler to be called
+ * @param {String|Function} `[route]` for what `ctx.path` handler to be called
  * @param {Function} `...fns` can be array or single function, any number of
- *                            arguments after `pathname` can be given too
+ *                            arguments after `route` can be given too
  * @return {KoaBetterRouter} `this` instance for chaining
  * @api public
  */
 
-KoaBetterRouter.prototype.addRoute = function addRoute (method, pathname, fns) {
+KoaBetterRouter.prototype.addRoute = function addRoute (method, route, fns) {
+  let routeObject = this.createRoute.apply(this, arguments)
+  this.routes.push(routeObject)
+  return this
+}
+
+/**
+ * > Just creates route object without adding it to `this.routes` array.
+ *
+ * @param {String} `<method>` http verb or `'GET /users'`
+ * @param {String|Function} `[route]` for what `ctx.path` handler to be called
+ * @param {Function} `...fns` can be array or single function, any number of
+ *                            arguments after `route` can be given too
+ * @return {KoaBetterRouter} `this` instance for chaining
+ * @return {Object} plain `route` object with useful properties
+ * @api public
+ */
+
+KoaBetterRouter.prototype.createRoute = function createRoute (method, route, fns) {
   let args = [].slice.call(arguments, 3)
   let middlewares = utils.arrayify(fns).concat(args)
 
   if (typeof method !== 'string') {
-    throw new TypeError('.addRoute: expect `method` to be a string')
+    throw new TypeError('.createRoute: expect `method` to be a string')
   }
 
   let parts = method.split(' ')
   method = parts[0] || 'get'
   method = method.toUpperCase()
 
-  if (typeof pathname === 'function') {
-    middlewares = [pathname].concat(middlewares)
-    pathname = parts[1]
+  if (typeof route === 'function') {
+    middlewares = [route].concat(middlewares)
+    route = parts[1]
   }
-  if (Array.isArray(pathname)) {
-    middlewares = pathname.concat(middlewares)
-    pathname = parts[1]
+  if (Array.isArray(route)) {
+    middlewares = route.concat(middlewares)
+    route = parts[1]
   }
-  if (typeof pathname !== 'string') {
-    throw new TypeError('.addRoute: expect `pathname` be string, array or function')
+  if (typeof route !== 'string') {
+    throw new TypeError('.createRoute: expect `route` be string, array or function')
   }
 
-  let prefixed = utils.createPrefix(this.options.prefix, pathname)
-  this.routes.push({
+  let prefixed = utils.createPrefix(this.options.prefix, route)
+  return {
     prefix: this.options.prefix,
     path: prefixed,
-    pathname: pathname,
+    pathname: route,
+    route: route,
     match: this.route(prefixed),
     method: method,
     middlewares: middlewares
-  })
-  return this
+  }
 }
 
 /**
