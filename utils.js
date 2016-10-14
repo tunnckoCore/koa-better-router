@@ -26,16 +26,17 @@ utils.notImplemented = function notImplemented () {
   }
 }
 
-utils.r = function r (name, id, edit) {
-  name = name !== '' ? `/${name}` : ''
-  let url = name + (id ? `/${id}` : '') + (edit ? `/${edit}` : '')
-  return url
-}
-
 utils.arrayify = function arrayify (val) {
   if (!val) return []
   if (Array.isArray(val)) return val
   return [val]
+}
+
+utils.createPrefix = function createPrefix (prefix, pathname) {
+  let path = pathname.replace(/^\/|\/$/, '')
+  let clean = prefix.replace(/^\/|\/$/, '')
+  clean = clean.length > 0 ? `/${clean}` : clean
+  return `${clean}/${path}`
 }
 
 utils.defaultController = {
@@ -49,58 +50,6 @@ utils.defaultController = {
   delete: utils.notImplemented(),
   del: utils.notImplemented()
 }
-
-// @todo: move to `koa-rest-router`
-utils.cloneArray = function cloneArray (arr) {
-  let res = []
-  for (const item of arr) {
-    res.push(item)
-  }
-  return res
-}
-
-/**
- * @todo: move to `koa-rest-router`
- * make it more flexible
- * to be able to:
- *
- * ```js
- * // /companies/:company/departments/:department/profiles
- * // /companies/:company/departments/:department/profiles/:profile
- * let full = router.extend(companies, departments, profiles)
- *
- * // /companies/:company/departments/:department/profiles/:profile/clients
- * // /companies/:company/departments/:department/profiles/:profile/clients/:client
- * router.extend(full, clients)
- * ```
- */
-
-utils.createPath = function createPath (destRoute, srcRoute, third) {
-  let destParts = destRoute.path.split('/')
-  let srcParts = srcRoute.path.split('/')
-  let singular = third
-    ? utils.inflection.singularize(destParts[3])
-    : utils.inflection.singularize(destParts[1])
-  let len = third ? 4 : 2
-  let part3 = third ? destParts[5] : destParts[3]
-
-  if (destParts.length === len) {
-    destParts.push(`:${singular}`)
-  }
-  if (destParts[2] === 'new') {
-    destParts[2] = `:${singular}`
-  }
-  if (third && destParts[4] === 'new') {
-    destParts[4] = `:${singular}`
-  }
-  if (part3 === 'edit') {
-    destParts = destParts.slice(0, -1)
-  }
-
-  let path = destParts.concat(srcParts).filter(Boolean)
-  return '/' + path.join('/')
-}
-
 /**
  * Expose `utils` modules
  */
