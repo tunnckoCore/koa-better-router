@@ -286,10 +286,7 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
 
         route.params = params
         route.middlewares = route.middlewares.map((fn) => {
-          if (utils.isGenerator(fn)) {
-            return utils.convert(fn)
-          }
-          return fn
+          return utils.isGenerator(fn) ? utils.convert(fn) : fn
         })
 
         // may be useful for the user

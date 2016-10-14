@@ -9,35 +9,103 @@
 
 'use strict'
 
+var request = require('supertest')
+let test = require('mukla')
 let Koa = require('koa')
 let Router = require('./index')
-let app = new Koa()
-let api = Router()
-
-api.loadMethods()
-  .get('/users', function (ctx, next) {
-    ctx.body = `GET ${ctx.route.path}`
-    return next()
-  })
-  .get('/users/:user', function (ctx, next) {
-    ctx.body = `GET ${ctx.route.path}, param :user is ${ctx.params.user}`
-    return next()
-  })
-
 let router = Router()
-router.addRoute('GET /', function (ctx, next) {
-  ctx.body = 'Hello! Try out /api/users and /foo/users'
-  return next()
+let app = new Koa()
+
+test('should expose constructor', function (done) {
+  test.strictEqual(typeof Router, 'function')
+  test.strictEqual(typeof Router(), 'object')
+  test.strictEqual(typeof (new Router()), 'object')
+  test.strictEqual(typeof router, 'object')
+  done()
 })
 
-app.use(api.middleware({prefix: '/api'}))
-app.use(api.middleware({prefix: '/foo'}))
-app.use(router.middleware())
+test('should have `.addRoute`, `.middleware` and `legacyMiddlewares` methods', function (done) {
+  test.strictEqual(typeof router.addRoute, 'function')
+  test.strictEqual(typeof router.middleware, 'function')
+  test.strictEqual(typeof router.loadMethods, 'function')
+  test.strictEqual(typeof router.legacyMiddleware, 'function')
+  done()
+})
 
-// comment out to try it
-// app.listen(3222, function () {
-//   console.log('Server listening on http://localhost:3222')
-// })
+test('should not have the HTTP verbs as methods if not `.loadMethods` called', function (done) {
+  test.strictEqual(router.get, undefined)
+  test.strictEqual(router.put, undefined)
+  test.strictEqual(router.del, undefined)
+  test.strictEqual(router.post, undefined)
+  test.strictEqual(router.patch, undefined)
+  test.strictEqual(router.delete, undefined)
+  done()
+})
+
+test('should have HTTP verbs as methods when `.loadMethods` is called', function (done) {
+  let api = Router({ prefix: '/api' })
+  api.loadMethods()
+  test.strictEqual(typeof api.put, 'function')
+  test.strictEqual(typeof api.get, 'function')
+  test.strictEqual(typeof api.post, 'function')
+  test.strictEqual(typeof api.patch, 'function')
+  done()
+})
+
+test('should have `.route` method (path-match matcher) on instance', function (done) {
+  test.strictEqual(typeof router.route, 'function')
+  done()
+})
+
+test('should have empty `.routes` array on initialization', function (done) {
+  test.strictEqual(Array.isArray(router.routes), true)
+  test.strictEqual(router.routes.length, 0)
+  done()
+})
+
+test('should `.addRoute` throw TypeError if `method` a string', function (done) {
+  function fixture () {
+    router.addRoute(123)
+  }
+  test.throws(fixture, TypeError)
+  test.throws(fixture, /expect `method` to be a string/)
+  done()
+})
+
+test('should `.addRoute` throw TypeError pathname not a string, array or function', function (done) {
+  function fixture () {
+    router.addRoute('GET', 123)
+  }
+  test.throws(fixture, TypeError)
+  test.throws(fixture, /expect `pathname` be string, array or function/)
+  done()
+})
+
+test('should `.addRoute` be able to accept single function as `pathname`', function (done) {
+  let apiRouter = Router()
+  apiRouter.addRoute('GET /users', function (ctx, next) {})
+  done()
+})
+
+test('should `.addRoute` accept `pathname` to be array of middlewares', function (done) {
+  let apiRouter = Router()
+  apiRouter.addRoute('GET /companies', [
+    function (ctx, next) {
+      ctx.body = 'Hello world!'
+      return next()
+    },
+    function * (next) {
+      this.body = `${this.body} Try /companies and /api/companies`
+      yield next
+    }
+  ])
+
+  app.use(apiRouter.middleware({ prefix: '/api' }))
+  request(app.callback()).get('/api/companies')
+    .expect(200, /Hello world! Try/)
+    .expect(/companies and/)
+    .end(done)
+})
 
 // var indexMw = [function fn1 (ctx, next) {
 //   ctx.body = 'GET / - new middleware and'
