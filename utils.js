@@ -9,7 +9,6 @@ require = utils // eslint-disable-line no-undef, no-native-reassign, no-global-a
  */
 
 require('extend-shallow', 'extend')
-require('inflection')
 require('methods')
 require('path-match')
 require('is-es6-generator-function', 'isGenerator')
