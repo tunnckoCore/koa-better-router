@@ -80,7 +80,6 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
   return this.options.legacy
     ? this.legacyMiddleware()
     : (ctx, next) => {
-      console.log(this.routes)
       for (const route of this.routes) {
         if (ctx.method !== route.method) {
           continue
@@ -102,8 +101,9 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
           return fn
         })
 
-        return utils.compose(route.middlewares)(ctx).then(() => next())
+        utils.compose(route.middlewares)(ctx)
       }
+      return next()
     }
 }
 

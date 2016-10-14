@@ -10,12 +10,11 @@
 'use strict'
 
 let Koa = require('koa')
-let Router1 = require('./index')
-let Router2 = require('./index')
+let Router = require('./index')
 let app = new Koa()
-let apiRouter = new Router1({ prefix: '/api' })
+let api = Router({ prefix: '/api' })
 
-apiRouter.loadMethods()
+api.loadMethods()
   .get('/users', function (ctx, next) {
     ctx.body = 'GET /api/users'
     return next()
@@ -24,17 +23,14 @@ apiRouter.loadMethods()
     ctx.body = `GET /api/users/${ctx.params.user}`
     return next()
   })
-app.use(apiRouter.middleware())
 
-// @todo: two totally different instances
-// of the router ... and there are conflicts..
-//
-let router = new Router2({ prefix: '/' })
-router.loadMethods().get('/foo', (ctx, next) => {
-  ctx.body = 'Hello world! Try /api/users or /api/users/123'
+let router = Router()
+router.addRoute('GET /', function (ctx, next) {
+  ctx.body = 'Hello! Try out /api/users'
   return next()
 })
 
+app.use(api.middleware())
 app.use(router.middleware())
 
 // app.listen(3222, function () {
