@@ -172,11 +172,37 @@ KoaBetterRouter.prototype.addRoute = function addRoute (method, route, fns) {
 /**
  * > Just creates route object without adding it to `this.routes` array.
  *
+ * **Example**
+ *
+ * ```js
+ * let router = require('koa-better-router')({ prefix: '/api' })
+ * let route = router.createRoute('GET', '/users', [
+ *   function (ctx, next) {},
+ *   function (ctx, next) {},
+ *   function (ctx, next) {},
+ * ])
+ *
+ * console.log(route)
+ * // => {
+ * //   prefix: '/api',
+ * //   route: '/users',
+ * //   pathname: '/users',
+ * //   path: '/api/users',
+ * //   match: matcher function against `route.path`
+ * //   method: 'GET',
+ * //   middlewares: array of middlewares for this route
+ * // }
+ *
+ * console.log(route.match('/foobar'))    // => false
+ * console.log(route.match('/users'))     // => false
+ * console.log(route.match('/api/users')) // => true
+ * console.log(route.middlewares.length)  // => 3
+ * ```
+ *
  * @param {String} `<method>` http verb or `'GET /users'`
  * @param {String|Function} `[route]` for what `ctx.path` handler to be called
  * @param {Function} `...fns` can be array or single function, any number of
  *                            arguments after `route` can be given too
- * @return {KoaBetterRouter} `this` instance for chaining
  * @return {Object} plain `route` object with useful properties
  * @api public
  */

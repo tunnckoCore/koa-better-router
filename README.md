@@ -89,13 +89,13 @@ console.log(router.del)  // => function
 ```
 
 ### [.addRoute](index.js#L166)
-> Powerful method to do the routing if you don't want to populate you router instance with dozens of methods. The `method` can be just HTTP verb or `method` plus `pathname` something like `'GET /users'`. Both modern and generators middlewares can be given too, and can be combined too.
+> Powerful method to add `route` if you don't want to populate you router instance with dozens of methods. The `method` can be just HTTP verb or `method` plus `route` something like `'GET /users'`. Both modern and generators middlewares can be given too, and can be combined too. **Adds routes to `this.routes` array**.
 
 **Params**
 
 * `<method>` **{String}**: http verb or `'GET /users'`    
-* `[pathname]` **{String|Function}**: for what `ctx.path` handler to be called    
-* `...fns` **{Function}**: can be array or single function, any number of arguments after `pathname` can be given too    
+* `[route]` **{String|Function}**: for what `ctx.path` handler to be called    
+* `...fns` **{Function}**: can be array or single function, any number of arguments after `route` can be given too    
 * `returns` **{KoaBetterRouter}** `this`: instance for chaining  
 
 **Example**
@@ -143,7 +143,44 @@ app.listen(4290, () => {
 })
 ```
 
-### [.middleware](index.js#L255)
+### [.createRoute](index.js#L210)
+> Just creates route object without adding it to `this.routes` array.
+
+**Params**
+
+* `<method>` **{String}**: http verb or `'GET /users'`    
+* `[route]` **{String|Function}**: for what `ctx.path` handler to be called    
+* `...fns` **{Function}**: can be array or single function, any number of arguments after `route` can be given too    
+* `returns` **{Object}**: plain `route` object with useful properties  
+
+**Example**
+
+```js
+let router = require('koa-better-router')({ prefix: '/api' })
+let route = router.createRoute('GET', '/users', [
+  function (ctx, next) {},
+  function (ctx, next) {},
+  function (ctx, next) {},
+])
+
+console.log(route)
+// => {
+//   prefix: '/api',
+//   route: '/users',
+//   pathname: '/users',
+//   path: '/api/users',
+//   match: matcher function against `route.path`
+//   method: 'GET',
+//   middlewares: array of middlewares for this route
+// }
+
+console.log(route.match('/foobar'))    // => false
+console.log(route.match('/users'))     // => false
+console.log(route.match('/api/users')) // => true
+console.log(route.middlewares.length)  // => 3
+```
+
+### [.middleware](index.js#L299)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 **Params**
@@ -189,7 +226,7 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L331)
+### [.legacyMiddleware](index.js#L379)
 > Converts the modern middleware routes to generator functions using [koa-convert][].back under the hood. It is sugar for the `.middleware(true)` or `.middleware({ legacy: true })`
 
 * `returns` **{Function|GeneratorFunction}**  
