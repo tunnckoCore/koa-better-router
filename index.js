@@ -122,7 +122,7 @@ KoaBetterRouter.prototype.loadMethods = function loadMethods () {
  *     ctx.body = `first ${ctx.route.path};`
  *     return next()
  *   },
- *   function * (next) => {
+ *   function * (next) {
  *     this.body = `${this.body} prefix is ${this.route.prefix};`
  *     yield next
  *   },
