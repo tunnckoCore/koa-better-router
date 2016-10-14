@@ -80,7 +80,9 @@
         "koa-better-body",
         "koa-ip-filter",
         "koa-bel",
-        "nanomatch"
+        "nanomatch",
+        "koa-better-serve",
+        "koa-rest-router"
       ]
     },
     "reflinks": [
