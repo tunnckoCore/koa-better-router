@@ -12,27 +12,29 @@
 let Koa = require('koa')
 let Router = require('./index')
 let app = new Koa()
-let api = Router({ prefix: '/api' })
+let api = Router()
 
 api.loadMethods()
   .get('/users', function (ctx, next) {
-    ctx.body = 'GET /api/users'
+    ctx.body = `GET ${ctx.route.path}`
     return next()
   })
   .get('/users/:user', function (ctx, next) {
-    ctx.body = `GET /api/users/${ctx.params.user}`
+    ctx.body = `GET ${ctx.route.path}, param :user is ${ctx.params.user}`
     return next()
   })
 
 let router = Router()
 router.addRoute('GET /', function (ctx, next) {
-  ctx.body = 'Hello! Try out /api/users'
+  ctx.body = 'Hello! Try out /api/users and /foo/users'
   return next()
 })
 
-app.use(api.middleware())
+app.use(api.middleware({prefix: '/api'}))
+app.use(api.middleware({prefix: '/foo'}))
 app.use(router.middleware())
 
+// comment out to try it
 // app.listen(3222, function () {
 //   console.log('Server listening on http://localhost:3222')
 // })

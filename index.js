@@ -76,7 +76,11 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
     ? opts.legacy
     : false
 
-  this.options = utils.extend({}, this.options, opts)
+  // allows multiple prefixes
+  // on one router
+  let options = utils.extend({}, this.options, opts)
+  this.options = options
+
   return this.options.legacy
     ? this.legacyMiddleware()
     : (ctx, next) => {
@@ -84,22 +88,29 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
         if (ctx.method !== route.method) {
           continue
         }
-
-        let prefixed = utils.createPrefix(this.options.prefix, route.pathname)
-        route.prefix = this.options.prefix
-        route.path = prefixed
-        route.match = this.route(prefixed)
+        if (options.prefix !== route.prefix) {
+          let prefixed = utils.createPrefix(options.prefix, route.pathname)
+          route.prefix = options.prefix
+          route.path = prefixed
+          route.match = this.route(prefixed)
+        }
 
         let params = route.match(ctx.path, ctx.params)
-        if (!params) continue
+        if (!params) {
+          continue
+        }
 
-        ctx.params = params
+        route.params = params
         route.middlewares = route.middlewares.map((fn) => {
           if (utils.isGenerator(fn)) {
             return utils.convert(fn)
           }
           return fn
         })
+
+        // may be useful for the user
+        ctx.route = route
+        ctx.params = params
 
         utils.compose(route.middlewares)(ctx)
       }
