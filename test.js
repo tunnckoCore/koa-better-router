@@ -163,9 +163,9 @@ test('should respect routes defined order (useful on REST APIs)', function (done
     ctx.body = `Create new profile. Route path: ${ctx.route.path}`
     return next()
   })
-  api.get('/profiles/:profile', function (ctx, next) {
-    ctx.body = `Profile: ${ctx.params.profile}`
-    return next()
+  .addRoute('GET /profiles/:profile', function * (next) {
+    this.body = `Profile: ${this.params.profile}`
+    yield next
   })
 
   app.use(api.middleware())
