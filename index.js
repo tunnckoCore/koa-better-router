@@ -279,22 +279,29 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
           route.match = this.route(prefixed)
         }
 
-        let params = route.match(ctx.path, ctx.params)
-        if (!params) {
+        // - if there's a match and no params it will be empty object!
+        // - if there are some params they will be here
+        // - if path not match it will be boolean `false`
+        let match = route.match(ctx.path, ctx.params)
+        if (!match) {
           continue
         }
 
-        route.params = params
+        route.params = match
         route.middlewares = route.middlewares.map((fn) => {
           return utils.isGenerator(fn) ? utils.convert(fn) : fn
         })
 
         // may be useful for the user
         ctx.route = route
-        ctx.params = params
+        ctx.params = route.params
 
-        utils.compose(route.middlewares)(ctx)
+        // calls next middleware on success
+        // returns rejected promises on error
+        return utils.compose(route.middlewares)(ctx).then(() => next())
       }
+      // called when request path not found on routes
+      // ensure calling next middleware which is after the router
       return next()
     }
 }

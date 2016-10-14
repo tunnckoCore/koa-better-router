@@ -153,3 +153,38 @@ test('should call next middleware correctly', function (done) {
       done()
     })
 })
+
+test('should respect routes defined order (useful on REST APIs)', function (done) {
+  let api = Router({ prefix: '/api' }).loadMethods()
+  let app = new Koa()
+  let called = 0
+
+  api.get('/profiles/new', function (ctx, next) {
+    ctx.body = `Create new profile. Route path: ${ctx.route.path}`
+    return next()
+  })
+  api.get('/profiles/:profile', function (ctx, next) {
+    ctx.body = `Profile: ${ctx.params.profile}`
+    return next()
+  })
+
+  app.use(api.middleware())
+  app.use(function (ctx, next) {
+    called++
+    return next()
+  })
+
+  request(app.callback()).get('/api/profiles/new').expect(200, /Create new profile/)
+    .end(function (err) {
+      test.ifError(err)
+      test.strictEqual(called, 1)
+
+      // request specific user profile
+      request(app.callback()).get('/api/profiles/123').expect(200, /Profile: 123/)
+        .end(function (err) {
+          test.ifError(err)
+          test.strictEqual(called, 2)
+          done()
+        })
+    })
+})
