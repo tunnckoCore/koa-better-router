@@ -17,15 +17,6 @@ require('koa-compose', 'compose')
 require('koa-convert', 'convert')
 require = fn // eslint-disable-line no-undef, no-native-reassign, no-global-assign
 
-utils.notImplemented = function notImplemented () {
-  return function (ctx, next) {
-    // ctx.throw(501)
-    ctx.status = 501
-    ctx.body = 'Not Implemented'
-    return next()
-  }
-}
-
 utils.arrayify = function arrayify (val) {
   if (!val) return []
   if (Array.isArray(val)) return val
@@ -39,6 +30,14 @@ utils.createPrefix = function createPrefix (prefix, pathname) {
   return `${clean}/${path}`
 }
 
+utils.notImplemented = function notImplemented () {
+  return function (ctx, next) {
+    ctx.status = 501
+    ctx.body = 'Not Implemented'
+    return next()
+  }
+}
+
 utils.defaultController = {
   index: utils.notImplemented(),
   new: utils.notImplemented(),
@@ -50,6 +49,7 @@ utils.defaultController = {
   delete: utils.notImplemented(),
   del: utils.notImplemented()
 }
+
 /**
  * Expose `utils` modules
  */
