@@ -84,13 +84,15 @@
       ]
     },
     "reflinks": [
+      "koa",
+      "koa-convert",
+      "koa-send",
       "micromatch",
       "through2",
       "use",
       "vinyl",
-      "koa",
-      "koa-convert",
-      "koa-send"
+      "methods",
+      "path-match"
     ],
     "lint": {
       "reflinks": true
