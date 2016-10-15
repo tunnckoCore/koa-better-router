@@ -103,73 +103,6 @@ KoaBetterRouter.prototype.loadMethods = function loadMethods () {
 }
 
 /**
- * > Powerful method to add `route` if you don't want
- * to populate you router instance with dozens of methods.
- * The `method` can be just HTTP verb or `method`
- * plus `route` something like `'GET /users'`.
- * Both modern and generators middlewares can be given too,
- * and can be combined too. **Adds routes to `this.routes` array**.
- *
- * **Example**
- *
- * ```js
- * let router = require('koa-better-router')()
- *
- * // any number of middlewares can be given
- * // both modern and generator middlewares will work
- * router.addRoute('GET /users',
- *   (ctx, next) => {
- *     ctx.body = `first ${ctx.route.path};`
- *     return next()
- *   },
- *   function * (next) {
- *     this.body = `${this.body} prefix is ${this.route.prefix};`
- *     yield next
- *   },
- *   (ctx, next) => {
- *     ctx.body = `${ctx.body} and third middleware!`
- *     return next()
- *   }
- * )
- *
- * // You can middlewares as array too
- * router.addRoute('GET', '/users/:user', [
- *   (ctx, next) => {
- *     ctx.body = `GET /users/${ctx.params.user}`
- *     console.log(ctx.route)
- *     return next()
- *   },
- *   function * (next) {
- *     this.body = `${this.body}, prefix is: ${this.route.prefix}`
- *     yield next
- *   }
- * ])
- *
- * // can use `koa@1` and `koa@2`, both works
- * let Koa = require('koa')
- * let app = new Koa()
- *
- * app.use(router.middleware())
- * app.listen(4290, () => {
- *   console.log('Koa server start listening on port 4290')
- * })
- * ```
- *
- * @param {String} `<method>` http verb or `'GET /users'`
- * @param {String|Function} `[route]` for what `ctx.path` handler to be called
- * @param {Function} `...fns` can be array or single function, any number of
- *                            arguments after `route` can be given too
- * @return {KoaBetterRouter} `this` instance for chaining
- * @api public
- */
-
-KoaBetterRouter.prototype.addRoute = function addRoute (method, route, fns) {
-  let routeObject = this.createRoute.apply(this, arguments)
-  this.routes.push(routeObject)
-  return this
-}
-
-/**
  * > Just creates route object without adding it to `this.routes` array.
  *
  * **Example**
@@ -241,6 +174,139 @@ KoaBetterRouter.prototype.createRoute = function createRoute (method, route, fns
     method: method,
     middlewares: middlewares
   }
+}
+
+/**
+ * > Powerful method to add `route` if you don't want
+ * to populate you router instance with dozens of methods.
+ * The `method` can be just HTTP verb or `method`
+ * plus `route` something like `'GET /users'`.
+ * Both modern and generators middlewares can be given too,
+ * and can be combined too. **Adds routes to `this.routes` array**.
+ *
+ * **Example**
+ *
+ * ```js
+ * let router = require('koa-better-router')()
+ *
+ * // any number of middlewares can be given
+ * // both modern and generator middlewares will work
+ * router.addRoute('GET /users',
+ *   (ctx, next) => {
+ *     ctx.body = `first ${ctx.route.path};`
+ *     return next()
+ *   },
+ *   function * (next) {
+ *     this.body = `${this.body} prefix is ${this.route.prefix};`
+ *     yield next
+ *   },
+ *   (ctx, next) => {
+ *     ctx.body = `${ctx.body} and third middleware!`
+ *     return next()
+ *   }
+ * )
+ *
+ * // You can middlewares as array too
+ * router.addRoute('GET', '/users/:user', [
+ *   (ctx, next) => {
+ *     ctx.body = `GET /users/${ctx.params.user}`
+ *     console.log(ctx.route)
+ *     return next()
+ *   },
+ *   function * (next) {
+ *     this.body = `${this.body}, prefix is: ${this.route.prefix}`
+ *     yield next
+ *   }
+ * ])
+ *
+ * // can use `koa@1` and `koa@2`, both works
+ * let Koa = require('koa')
+ * let app = new Koa()
+ *
+ * app.use(router.middleware())
+ * app.listen(4290, () => {
+ *   console.log('Koa server start listening on port 4290')
+ * })
+ * ```
+ *
+ * @param {String} `<method>` http verb or `'GET /users'`
+ * @param {String|Function} `[route]` for what `ctx.path` handler to be called
+ * @param {Function} `...fns` can be array or single function, any number of
+ *                            arguments after `route` can be given too
+ * @return {KoaBetterRouter} `this` instance for chaining
+ * @api public
+ */
+
+KoaBetterRouter.prototype.addRoute = function addRoute (method, route, fns) {
+  let routeObject = this.createRoute.apply(this, arguments)
+  this.routes.push(routeObject)
+  return this
+}
+
+/**
+ * > Groups multiple _"Route Objects"_ into one which middlewares
+ * will be these middlewares from the last "source". So let say
+ * you have `dest` route with 2 middlewares appended to it and
+ * the `src1` route has 3 middlewares, the
+ * final (returned) route object will have these 3 middlewares
+ * from `src1` not the middlewares from `dest`. Make sense?
+ * If not this not make sense for you, please open an issue here,
+ * so we can discuss and change it (then will change it
+ * in the [koa-rest-router][] too, because there the things with
+ * method `.groupResource` are the same).
+ *
+ * **Example**
+ *
+ * ```js
+ * let router = require('./index')({ prefix: '/api/v3' })
+ *
+ * let foo = router.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
+ * let bar = router.createRoute('GET /bar', function (ctx, next) {})
+ *
+ * let baz = router.groupRoutes(foo, bar)
+ * console.log(baz)
+ * // => Route Object {
+ * //   prefix: '/api/v3',
+ * //   path: '/api/v3/foo/qux/sas/bar',
+ * //   pathname: '/foo/qux/sas/bar'
+ * //   ...
+ * // }
+ *
+ * // Server part
+ * let Koa = require('koa')
+ * let app = new Koa()
+ *
+ * router.routes = router.routes.concat(baz)
+ * app.use(router.middleware())
+ * app.listen(2222, () => {
+ *   console.log('Server listening on http://localhost:2222')
+ *
+ *   router.routes.forEach((route) => {
+ *     console.log(`${route.method} http://localhost:2222${route.path}`)
+ *   })
+ * })
+ * ```
+ *
+ * @param  {Object} `dest` known as _"Route Object"_
+ * @param  {Object} `src1` second _"Route Object"_
+ * @param  {Object} `src2` third _"Route Object"_
+ * @return {Object} totally new _"Route Object"_ using `.createRotue` under the hood
+ * @api public
+ */
+
+KoaBetterRouter.prototype.groupRoutes = function groupRoutes (dest, src1, src2) {
+  if (!utils.isObject(dest) && !utils.isObject(src1)) {
+    throw new TypeError('.groupRoutes: expect both `dest` and `src1` be objects')
+  }
+  let pathname = dest.route + src1.route
+  let route = this.createRoute(dest.method, pathname, src1.middlewares)
+
+  if (utils.isObject(src2)) {
+    pathname = route.route + src2.route
+    route = this.createRoute(dest.method, pathname, src2.middlewares)
+  }
+
+  return route
 }
 
 /**
@@ -378,72 +444,6 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
 
 KoaBetterRouter.prototype.legacyMiddleware = function legacyMiddleware () {
   return utils.convert.back(this.middleware())
-}
-
-/**
- * > Groups multiple _"Route Objects"_ into one which middlewares
- * will be these middlewares from the last "source". So let say
- * you have `dest` route with 2 middlewares appended to it and
- * the `src1` route has 3 middlewares, the
- * final (returned) route object will have these 3 middlewares
- * from `src1` not the middlewares from `dest`. Make sense?
- * If not this not make sense for you, please open an issue here,
- * so we can discuss and change it (then will change it
- * in the [koa-rest-router][] too, because there the things with
- * method `.groupResource` are the same).
- *
- * **Example**
- *
- * ```js
- * let router = require('./index')({ prefix: '/api/v3' })
- *
- * let foo = router.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
- * let bar = router.createRoute('GET /bar', function (ctx, next) {})
- *
- * let baz = router.groupRoutes(foo, bar)
- * console.log(baz)
- * // => Route Object {
- * //   prefix: '/api/v3',
- * //   path: '/api/v3/foo/qux/sas/bar',
- * //   pathname: '/foo/qux/sas/bar'
- * //   ...
- * // }
- *
- * // Server part
- * let Koa = require('koa')
- * let app = new Koa()
- *
- * router.routes = router.routes.concat(baz)
- * app.use(router.middleware())
- * app.listen(2222, () => {
- *   console.log('Server listening on http://localhost:2222')
- *
- *   router.routes.forEach((route) => {
- *     console.log(`${route.method} http://localhost:2222${route.path}`)
- *   })
- * })
- * ```
- *
- * @param  {Object} `dest` known as _"Route Object"_
- * @param  {Object} `src1` second _"Route Object"_
- * @param  {Object} `src2` third _"Route Object"_
- * @return {Object} totally new _"Route Object"_ using `.createRotue` under the hood
- * @api public
- */
-
-KoaBetterRouter.prototype.groupRoutes = function groupRoutes (dest, src1, src2) {
-  if (!utils.isObject(dest) && !utils.isObject(src1)) {
-    throw new TypeError('.groupRoutes: expect both `dest` and `src1` be objects')
-  }
-  let pathname = dest.route + src1.route
-  let route = this.createRoute(dest.method, pathname, src1.middlewares)
-
-  if (utils.isObject(src2)) {
-    pathname = route.route + src2.route
-    route = this.createRoute(dest.method, pathname, src2.middlewares)
-  }
-
-  return route
 }
 
 /**

@@ -13,11 +13,11 @@ powerful, flexible and RESTful APIs for enterprise easily!
 - [API](#api)
   * [KoaBetterRouter](#koabetterrouter)
   * [.loadMethods](#loadmethods)
-  * [.addRoute](#addroute)
   * [.createRoute](#createroute)
+  * [.addRoute](#addroute)
+  * [.groupRoutes](#grouproutes)
   * [.middleware](#middleware)
   * [.legacyMiddleware](#legacymiddleware)
-  * [.groupRoutes](#grouproutes)
 - [Related](#related)
 - [Contributing](#contributing)
 
@@ -104,7 +104,44 @@ console.log(router.put)  // => function
 console.log(router.del)  // => function
 ```
 
-### [.addRoute](index.js#L166)
+### [.createRoute](index.js#L143)
+> Just creates route object without adding it to `this.routes` array.
+
+**Params**
+
+* `<method>` **{String}**: http verb or `'GET /users'`    
+* `[route]` **{String|Function}**: for what `ctx.path` handler to be called    
+* `...fns` **{Function}**: can be array or single function, any number of arguments after `route` can be given too    
+* `returns` **{Object}**: plain `route` object with useful properties  
+
+**Example**
+
+```js
+let router = require('koa-better-router')({ prefix: '/api' })
+let route = router.createRoute('GET', '/users', [
+  function (ctx, next) {},
+  function (ctx, next) {},
+  function (ctx, next) {},
+])
+
+console.log(route)
+// => {
+//   prefix: '/api',
+//   route: '/users',
+//   pathname: '/users',
+//   path: '/api/users',
+//   match: matcher function against `route.path`
+//   method: 'GET',
+//   middlewares: array of middlewares for this route
+// }
+
+console.log(route.match('/foobar'))    // => false
+console.log(route.match('/users'))     // => false
+console.log(route.match('/api/users')) // => true
+console.log(route.middlewares.length)  // => 3
+```
+
+### [.addRoute](index.js#L240)
 > Powerful method to add `route` if you don't want to populate you router instance with dozens of methods. The `method` can be just HTTP verb or `method` plus `route` something like `'GET /users'`. Both modern and generators middlewares can be given too, and can be combined too. **Adds routes to `this.routes` array**.
 
 **Params**
@@ -159,44 +196,49 @@ app.listen(4290, () => {
 })
 ```
 
-### [.createRoute](index.js#L210)
-> Just creates route object without adding it to `this.routes` array.
+### [.groupRoutes](index.js#L297)
+> Groups multiple _"Route Objects"_ into one which middlewares will be these middlewares from the last "source". So let say you have `dest` route with 2 middlewares appended to it and the `src1` route has 3 middlewares, the final (returned) route object will have these 3 middlewares from `src1` not the middlewares from `dest`. Make sense? If not this not make sense for you, please open an issue here, so we can discuss and change it (then will change it in the [koa-rest-router][] too, because there the things with method `.groupResource` are the same).
 
 **Params**
 
-* `<method>` **{String}**: http verb or `'GET /users'`    
-* `[route]` **{String|Function}**: for what `ctx.path` handler to be called    
-* `...fns` **{Function}**: can be array or single function, any number of arguments after `route` can be given too    
-* `returns` **{Object}**: plain `route` object with useful properties  
+* `dest` **{Object}**: known as _"Route Object"_    
+* `src1` **{Object}**: second _"Route Object"_    
+* `src2` **{Object}**: third _"Route Object"_    
+* `returns` **{Object}**: totally new _"Route Object"_ using `.createRotue` under the hood  
 
 **Example**
 
 ```js
-let router = require('koa-better-router')({ prefix: '/api' })
-let route = router.createRoute('GET', '/users', [
-  function (ctx, next) {},
-  function (ctx, next) {},
-  function (ctx, next) {},
-])
+let router = require('./index')({ prefix: '/api/v3' })
 
-console.log(route)
-// => {
-//   prefix: '/api',
-//   route: '/users',
-//   pathname: '/users',
-//   path: '/api/users',
-//   match: matcher function against `route.path`
-//   method: 'GET',
-//   middlewares: array of middlewares for this route
+let foo = router.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
+let bar = router.createRoute('GET /bar', function (ctx, next) {})
+
+let baz = router.groupRoutes(foo, bar)
+console.log(baz)
+// => Route Object {
+//   prefix: '/api/v3',
+//   path: '/api/v3/foo/qux/sas/bar',
+//   pathname: '/foo/qux/sas/bar'
+//   ...
 // }
 
-console.log(route.match('/foobar'))    // => false
-console.log(route.match('/users'))     // => false
-console.log(route.match('/api/users')) // => true
-console.log(route.middlewares.length)  // => 3
+// Server part
+let Koa = require('koa')
+let app = new Koa()
+
+router.routes = router.routes.concat(baz)
+app.use(router.middleware())
+app.listen(2222, () => {
+  console.log('Server listening on http://localhost:2222')
+
+  router.routes.forEach((route) => {
+    console.log(`${route.method} http://localhost:2222${route.path}`)
+  })
+})
 ```
 
-### [.middleware](index.js#L299)
+### [.middleware](index.js#L365)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 **Params**
@@ -242,7 +284,7 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L379)
+### [.legacyMiddleware](index.js#L445)
 > Converts the modern middleware routes to generator functions using [koa-convert][].back under the hood. It is sugar for the `.middleware(true)` or `.middleware({ legacy: true })`
 
 * `returns` **{Function|GeneratorFunction}**  
@@ -261,48 +303,6 @@ router.addRoute('GET', '/users', function * (next) {
 app.use(router.legacyMiddleware())
 app.listen(3333, () => {
   console.log('Open http://localhost:3333/users')
-})
-```
-
-### [.groupRoutes](index.js#L434)
-> Groups multiple _"Route Objects"_ into one which middlewares will be these middlewares from the last "source". So let say you have `dest` route with 2 middlewares appended to it and the `src1` route has 3 middlewares, the final (returned) route object will have these 3 middlewares from `src1` not the middlewares from `dest`. Make sense? If not this not make sense for you, please open an issue here, so we can discuss and change it (then will change it in the [koa-rest-router][] too, because there the things with method `.groupResource` are the same).
-
-**Params**
-
-* `dest` **{Object}**: known as _"Route Object"_    
-* `src1` **{Object}**: second _"Route Object"_    
-* `src2` **{Object}**: third _"Route Object"_    
-* `returns` **{Object}**: totally new _"Route Object"_ using `.createRotue` under the hood  
-
-**Example**
-
-```js
-let router = require('./index')({ prefix: '/api/v3' })
-
-let foo = router.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
-let bar = router.createRoute('GET /bar', function (ctx, next) {})
-
-let baz = router.groupRoutes(foo, bar)
-console.log(baz)
-// => Route Object {
-//   prefix: '/api/v3',
-//   path: '/api/v3/foo/qux/sas/bar',
-//   pathname: '/foo/qux/sas/bar'
-//   ...
-// }
-
-// Server part
-let Koa = require('koa')
-let app = new Koa()
-
-router.routes = router.routes.concat(baz)
-app.use(router.middleware())
-app.listen(2222, () => {
-  console.log('Server listening on http://localhost:2222')
-
-  router.routes.forEach((route) => {
-    console.log(`${route.method} http://localhost:2222${route.path}`)
-  })
 })
 ```
 
