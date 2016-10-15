@@ -17,6 +17,7 @@ powerful, flexible and RESTful APIs for enterprise easily!
   * [.createRoute](#createroute)
   * [.middleware](#middleware)
   * [.legacyMiddleware](#legacymiddleware)
+  * [.groupRoutes](#grouproutes)
 - [Related](#related)
 - [Contributing](#contributing)
 
@@ -260,6 +261,48 @@ router.addRoute('GET', '/users', function * (next) {
 app.use(router.legacyMiddleware())
 app.listen(3333, () => {
   console.log('Open http://localhost:3333/users')
+})
+```
+
+### [.groupRoutes](index.js#L434)
+> Groups multiple _"Route Objects"_ into one which middlewares will be these middlewares from the last "source". So let say you have `dest` route with 2 middlewares appended to it and the `src1` route has 3 middlewares, the final (returned) route object will have these 3 middlewares from `src1` not the middlewares from `dest`. Make sense? If not this not make sense for you, please open an issue here, so we can discuss and change it (then will change it in the [koa-rest-router][] too, because there the things with method `.groupResource` are the same).
+
+**Params**
+
+* `dest` **{Object}**: known as _"Route Object"_    
+* `src1` **{Object}**: second _"Route Object"_    
+* `src2` **{Object}**: third _"Route Object"_    
+* `returns` **{Object}**: totally new _"Route Object"_ using `.createRotue` under the hood  
+
+**Example**
+
+```js
+let router = require('./index')({ prefix: '/api/v3' })
+
+let foo = router.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
+let bar = router.createRoute('GET /bar', function (ctx, next) {})
+
+let baz = router.groupRoutes(foo, bar)
+console.log(baz)
+// => Route Object {
+//   prefix: '/api/v3',
+//   path: '/api/v3/foo/qux/sas/bar',
+//   pathname: '/foo/qux/sas/bar'
+//   ...
+// }
+
+// Server part
+let Koa = require('koa')
+let app = new Koa()
+
+router.routes = router.routes.concat(baz)
+app.use(router.middleware())
+app.listen(2222, () => {
+  console.log('Server listening on http://localhost:2222')
+
+  router.routes.forEach((route) => {
+    console.log(`${route.method} http://localhost:2222${route.path}`)
+  })
 })
 ```
 
