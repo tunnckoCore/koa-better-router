@@ -380,4 +380,11 @@ KoaBetterRouter.prototype.legacyMiddleware = function legacyMiddleware () {
   return utils.convert.back(this.middleware())
 }
 
+/**
+ * Expose `KoaBetterRouter` constructor
+ *
+ * @type {Function}
+ * @api private
+ */
+
 module.exports = KoaBetterRouter

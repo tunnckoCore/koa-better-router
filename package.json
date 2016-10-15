@@ -78,7 +78,11 @@
   },
   "verb": {
     "run": true,
-    "toc": false,
+    "toc": {
+      "render": true,
+      "method": "preWrite",
+      "maxdepth": 4
+    },
     "layout": "empty",
     "tasks": [
       "readme"

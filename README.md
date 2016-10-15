@@ -7,6 +7,19 @@
 You may also be interested in [koa-rest-router][]. It uses this router for creating
 powerful, flexible and RESTful APIs for enterprise easily!
 
+## Table of Contents
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+  * [KoaBetterRouter](#koabetterrouter)
+  * [.loadMethods](#loadmethods)
+  * [.addRoute](#addroute)
+  * [.createRoute](#createroute)
+  * [.middleware](#middleware)
+  * [.legacyMiddleware](#legacymiddleware)
+- [Related](#related)
+- [Contributing](#contributing)
+
 ## Install
 
 ```
@@ -24,6 +37,8 @@ let router = require('koa-better-router')().loadMethods()
 let Router = require('koa-better-router')
 let router = Router() // or new Router(), no matter
 ```
+
+## API
 
 ### [KoaBetterRouter](index.js#L49)
 > Initialize `KoaBetterRouter` with optional `options` which are directtly passed to `path-match` and in addition we have two more `legacy` and `prefix`.
