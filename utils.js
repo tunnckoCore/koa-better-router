@@ -16,6 +16,14 @@ require('koa-compose', 'compose')
 require('koa-convert', 'convert')
 require = fn // eslint-disable-line no-undef, no-native-reassign, no-global-assign
 
+utils.typeOf = function typeOf (val) {
+  return Array.isArray(val) ? 'array' : typeof val
+}
+
+utils.isObject = function isObject (val) {
+  return utils.typeOf(val) === 'object'
+}
+
 utils.arrayify = function arrayify (val) {
   return val ? (Array.isArray(val) ? val : [val]) : []
 }

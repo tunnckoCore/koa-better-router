@@ -380,6 +380,21 @@ KoaBetterRouter.prototype.legacyMiddleware = function legacyMiddleware () {
   return utils.convert.back(this.middleware())
 }
 
+KoaBetterRouter.prototype.groupRoutes = function groupRoutes (dest, src1, src2) {
+  if (!utils.isObject(dest) && !utils.isObject(src1)) {
+    throw new TypeError('.groupRoutes: expect both `dest` and `src1` be objects')
+  }
+  let pathname = dest.route + src1.route
+  let route = this.createRoute(dest.method, pathname, src1.middlewares)
+
+  if (utils.isObject(src2)) {
+    pathname = route.route + src2.route
+    route = this.createRoute(dest.method, pathname, src2.middlewares)
+  }
+
+  return route
+}
+
 /**
  * Expose `KoaBetterRouter` constructor
  *

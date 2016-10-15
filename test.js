@@ -25,9 +25,10 @@ test('should expose constructor', function (done) {
   done()
 })
 
-test('should have `.addRoute`, `.middleware` and `legacyMiddlewares` methods', function (done) {
+test('should have `.addRoute`, `.middleware` and `legacyMiddleware` methods', function (done) {
   test.strictEqual(typeof router.addRoute, 'function')
   test.strictEqual(typeof router.createRoute, 'function')
+  test.strictEqual(typeof router.groupRoutes, 'function')
   test.strictEqual(typeof router.middleware, 'function')
   test.strictEqual(typeof router.loadMethods, 'function')
   test.strictEqual(typeof router.legacyMiddleware, 'function')
@@ -134,6 +135,7 @@ test('should `.middleware` return generator function when opts.legacy: true', fu
   let router = Router()
   let ret = router.middleware({ legacy: true })
   test.strictEqual(isGen(ret), true)
+  test.strictEqual(isGen(router.legacyMiddleware()), true)
   done()
 })
 
@@ -209,4 +211,37 @@ test('should respect routes defined order (useful on REST APIs)', function (done
           done()
         })
     })
+})
+
+test('should group multiple routes into one using `.groupRoutes`', function (done) {
+  let app = new Koa()
+  let api = Router({ prefix: '/api/v3' })
+
+  let foo = router.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
+  let bar = router.createRoute('GET /bar/dog', function (ctx, next) {})
+  let cat = router.createRoute('GET /cat', function (ctx, next) {
+    ctx.body = 'okey barrrr'
+    return next()
+  })
+
+  let baz = router.groupRoutes(foo, bar, cat)
+  test.strictEqual(baz.route, '/foo/qux/xyz/bar/dog/cat')
+  test.strictEqual(baz.path, '/foo/qux/xyz/bar/dog/cat')
+
+  api.routes = api.routes.concat(baz)
+  app.use(api.middleware())
+
+  request(app.callback())
+    .get('/api/v3/foo/qux/xyz/bar/dog/cat').expect(200, 'okey barrrr')
+      .end(done)
+})
+
+test('should `.groupRoutes` throw TypeError if `dest` not an object', function (done) {
+  function fixture () {
+    router.groupRoutes([123], 33)
+  }
+
+  test.throws(fixture, TypeError)
+  test.throws(fixture, /expect both `dest` and `src1`/)
+  done()
 })
