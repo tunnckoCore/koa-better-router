@@ -27,6 +27,7 @@ test('should expose constructor', function (done) {
 
 test('should have `.addRoute`, `.middleware` and `legacyMiddleware` methods', function (done) {
   test.strictEqual(typeof router.addRoute, 'function')
+  test.strictEqual(typeof router.addRoutes, 'function')
   test.strictEqual(typeof router.getRoute, 'function')
   test.strictEqual(typeof router.createRoute, 'function')
   test.strictEqual(typeof router.groupRoutes, 'function')
@@ -266,10 +267,24 @@ test('should be able to `.getRoute` using its pathname', function (done) {
 })
 
 test('should `.getRoute` throw TypeError if `name` not a string', function (done) {
-  function fixture () {
-    router.getRoute(123)
+  function fixie () {
+    Router().getRoute(444)
   }
-  test.throws(fixture, TypeError)
-  test.throws(fixture, /expect `name` to be a string/)
+  test.throws(fixie, /expect `name` to be a string/)
+  test.throws(fixie, TypeError)
+  done()
+})
+
+test('should add multiple routes into `this.routes`, using `.addRoutes` method', function (done) {
+  let roo = new Router()
+  let foo = roo.createRoute('GET', '/foo', function (ctx, next) {
+    ctx.body = 'foobar'
+    return next()
+  })
+  let baz = roo.createRoute('GET', '/baz/qux', (ctx, next) => {})
+
+  test.strictEqual(roo.routes.length, 0)
+  roo.addRoutes(foo, baz)
+  test.strictEqual(roo.routes.length, 2)
   done()
 })

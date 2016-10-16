@@ -16,6 +16,7 @@ powerful, flexible and RESTful APIs for enterprise easily!
   * [.createRoute](#createroute)
   * [.addRoute](#addroute)
   * [.getRoute](#getroute)
+  * [.addRoutes](#addroutes)
   * [.groupRoutes](#grouproutes)
   * [.middleware](#middleware)
   * [.legacyMiddleware](#legacymiddleware)
@@ -218,7 +219,44 @@ console.log(router.getRoute('cat/foo'))  // => Route Object
 console.log(router.getRoute('/cat/foo')) // => Route Object
 ```
 
-### [.groupRoutes](index.js#L337)
+### [.addRoutes](index.js#L326)
+> Concats any number of arguments (arrays of route objects) to the `this.routes` array. Think for it like registering routes. Can be used in combination with `.createRoute` and `.getRoute`.
+
+**Params**
+
+* `...args` **{Array}**: any number of arguments (arrays of route objects)    
+* `returns` **{KoaBetterRouter}** `this`: instance for chaining  
+
+**Example**
+
+```js
+let router = require('koa-better-router')()
+
+// returns Route Object
+let foo = router.createRoute('GET', '/foo', function (ctx, next) {
+  ctx.body = 'foobar'
+  return next()
+})
+console.log(foo)
+
+let baz = router.createRoute('GET', '/baz/qux', function (ctx, next) {
+  ctx.body = 'baz qux'
+  return next()
+})
+console.log(baz)
+
+// Empty array because we just
+// created them, didn't include them
+// as actual routes
+console.log(router.routes.length) // 0
+
+// register them as routes
+router.addRoutes(foo, baz)
+
+console.log(router.routes.length) // 2
+```
+
+### [.groupRoutes](index.js#L382)
 > Groups multiple _"Route Objects"_ into one which middlewares will be these middlewares from the last "source". So let say you have `dest` route with 2 middlewares appended to it and the `src1` route has 3 middlewares, the final (returned) route object will have these 3 middlewares from `src1` not the middlewares from `dest`. Make sense? If not this not make sense for you, please open an issue here, so we can discuss and change it (then will change it in the [koa-rest-router][] too, because there the things with method `.groupResource` are the same).
 
 **Params**
@@ -260,7 +298,7 @@ app.listen(2222, () => {
 })
 ```
 
-### [.middleware](index.js#L405)
+### [.middleware](index.js#L450)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 **Params**
@@ -306,7 +344,7 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L485)
+### [.legacyMiddleware](index.js#L530)
 > Converts the modern middleware routes to generator functions using [koa-convert][].back under the hood. It is sugar for the `.middleware(true)` or `.middleware({ legacy: true })`
 
 * `returns` **{Function|GeneratorFunction}**  
@@ -334,7 +372,7 @@ app.listen(3333, () => {
 - [koa-better-ratelimit](https://www.npmjs.com/package/koa-better-ratelimit): Better, smaller, faster - koa middleware for limit request by ip, store… [more](https://github.com/tunnckoCore/koa-better-ratelimit) | [homepage](https://github.com/tunnckoCore/koa-better-ratelimit "Better, smaller, faster - koa middleware for limit request by ip, store in-memory.")
 - [koa-better-serve](https://www.npmjs.com/package/koa-better-serve): Small, simple and correct serving of files, using [koa-send][] - nothing more. | [homepage](https://github.com/tunnckocore/koa-better-serve#readme "Small, simple and correct serving of files, using [koa-send][] - nothing more.")
 - [koa-ip-filter](https://www.npmjs.com/package/koa-ip-filter): Middleware for [koa][] that filters IPs against glob patterns, RegExp, string or… [more](https://github.com/tunnckocore/koa-ip-filter#readme) | [homepage](https://github.com/tunnckocore/koa-ip-filter#readme "Middleware for [koa][] that filters IPs against glob patterns, RegExp, string or array of globs. Support custom `403 Forbidden` message and custom ID.")
-- [koa-rest-router](https://www.npmjs.com/package/koa-rest-router): Building powerful, flexible and RESTful APIs for enterprise easily. | [homepage](https://github.com/tunnckocore/koa-rest-router#readme "Building powerful, flexible and RESTful APIs for enterprise easily.")
+- [koa-rest-router](https://www.npmjs.com/package/koa-rest-router): Most powerful, flexible and composable router for building enterprise RESTful APIs easily! | [homepage](https://github.com/tunnckocore/koa-rest-router#readme "Most powerful, flexible and composable router for building enterprise RESTful APIs easily!")
 - [nanomatch](https://www.npmjs.com/package/nanomatch): Fast, minimal glob matcher for node.js. Similar to micromatch, minimatch and multimatch… [more](https://github.com/jonschlinkert/nanomatch) | [homepage](https://github.com/jonschlinkert/nanomatch "Fast, minimal glob matcher for node.js. Similar to micromatch, minimatch and multimatch, but complete Bash 4.3 wildcard support only (no support for exglobs, posix brackets or braces)")
 
 ## Contributing

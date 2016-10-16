@@ -284,6 +284,51 @@ KoaBetterRouter.prototype.getRoute = function getRoute (name) {
 }
 
 /**
+ * > Concats any number of arguments (arrays of route objects) to
+ * the `this.routes` array. Think for it like
+ * registering routes. Can be used in combination
+ * with `.createRoute` and `.getRoute`.
+ *
+ * **Example**
+ *
+ * ```js
+ * let router = require('koa-better-router')()
+ *
+ * // returns Route Object
+ * let foo = router.createRoute('GET', '/foo', function (ctx, next) {
+ *   ctx.body = 'foobar'
+ *   return next()
+ * })
+ * console.log(foo)
+ *
+ * let baz = router.createRoute('GET', '/baz/qux', function (ctx, next) {
+ *   ctx.body = 'baz qux'
+ *   return next()
+ * })
+ * console.log(baz)
+ *
+ * // Empty array because we just
+ * // created them, didn't include them
+ * // as actual routes
+ * console.log(router.routes.length) // 0
+ *
+ * // register them as routes
+ * router.addRoutes(foo, baz)
+ *
+ * console.log(router.routes.length) // 2
+ * ```
+ *
+ * @param {Array} `...args` any number of arguments (arrays of route objects)
+ * @return {KoaBetterRouter} `this` instance for chaining
+ * @api public
+ */
+
+KoaBetterRouter.prototype.addRoutes = function addRoutes () {
+  this.routes = this.routes.concat.apply(this.routes, arguments)
+  return this
+}
+
+/**
  * > Groups multiple _"Route Objects"_ into one which middlewares
  * will be these middlewares from the last "source". So let say
  * you have `dest` route with 2 middlewares appended to it and
