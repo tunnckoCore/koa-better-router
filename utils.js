@@ -21,7 +21,7 @@ utils.typeOf = function typeOf (val) {
 }
 
 utils.isObject = function isObject (val) {
-  return utils.typeOf(val) === 'object'
+  return val && utils.typeOf(val) === 'object'
 }
 
 utils.arrayify = function arrayify (val) {

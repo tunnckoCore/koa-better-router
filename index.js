@@ -415,12 +415,7 @@ KoaBetterRouter.prototype.groupRoutes = function groupRoutes (dest, src1, src2) 
   let pathname = dest.route + src1.route
   let route = this.createRoute(dest.method, pathname, src1.middlewares)
 
-  if (utils.isObject(src2)) {
-    pathname = route.route + src2.route
-    route = this.createRoute(dest.method, pathname, src2.middlewares)
-  }
-
-  return route
+  return utils.isObject(src2) ? this.groupRoutes(route, src2) : route
 }
 
 /**
