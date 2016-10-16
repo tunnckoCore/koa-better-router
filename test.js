@@ -29,6 +29,7 @@ test('should have `.addRoute`, `.middleware` and `legacyMiddleware` methods', fu
   test.strictEqual(typeof router.addRoute, 'function')
   test.strictEqual(typeof router.addRoutes, 'function')
   test.strictEqual(typeof router.getRoute, 'function')
+  test.strictEqual(typeof router.getRoutes, 'function')
   test.strictEqual(typeof router.createRoute, 'function')
   test.strictEqual(typeof router.groupRoutes, 'function')
   test.strictEqual(typeof router.middleware, 'function')
@@ -120,7 +121,7 @@ test('should `.createRoute` just return route object', function (done) {
     function baz (ctx, next) {}
   ])
 
-  test.strictEqual(router.routes.length, 0)
+  test.strictEqual(router.getRoutes().length, 0)
 
   // route object
   test.strictEqual(route.prefix, '/api')
@@ -286,5 +287,10 @@ test('should add multiple routes into `this.routes`, using `.addRoutes` method',
   test.strictEqual(roo.routes.length, 0)
   roo.addRoutes(foo, baz)
   test.strictEqual(roo.routes.length, 2)
+  done()
+})
+
+test('should `.getRoutes` return `this.routes` array', function (done) {
+  test.strictEqual(router.getRoutes().length, router.routes.length)
   done()
 })

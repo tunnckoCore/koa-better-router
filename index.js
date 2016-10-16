@@ -329,6 +329,35 @@ KoaBetterRouter.prototype.addRoutes = function addRoutes () {
 }
 
 /**
+ * > Simple method that just returns `this.routes`, which
+ * is array of route objects.
+ *
+ * **Example**
+ *
+ * ```js
+ * let router = require('koa-better-router')()
+ *
+ * router.loadMethods()
+ *
+ * console.log(router.routes.length) // 0
+ * console.log(router.getRoutes().length) // 0
+ *
+ * router.get('/foo', (ctx, next) => {})
+ * router.get('/bar', (ctx, next) => {})
+ *
+ * console.log(router.routes.length) // 2
+ * console.log(router.getRoutes().length) // 2
+ * ```
+ *
+ * @return {Array} array of route objects
+ * @api public
+ */
+
+KoaBetterRouter.prototype.getRoutes = function getRoutes () {
+  return this.routes
+}
+
+/**
  * > Groups multiple _"Route Objects"_ into one which middlewares
  * will be these middlewares from the last "source". So let say
  * you have `dest` route with 2 middlewares appended to it and
