@@ -27,6 +27,7 @@ test('should expose constructor', function (done) {
 
 test('should have `.addRoute`, `.middleware` and `legacyMiddleware` methods', function (done) {
   test.strictEqual(typeof router.addRoute, 'function')
+  test.strictEqual(typeof router.getRoute, 'function')
   test.strictEqual(typeof router.createRoute, 'function')
   test.strictEqual(typeof router.groupRoutes, 'function')
   test.strictEqual(typeof router.middleware, 'function')
@@ -243,5 +244,32 @@ test('should `.groupRoutes` throw TypeError if `dest` not an object', function (
 
   test.throws(fixture, TypeError)
   test.throws(fixture, /expect both `dest` and `src1`/)
+  done()
+})
+
+test('should be able to `.getRoute` using its pathname', function (done) {
+  let v3 = Router().loadMethods()
+  v3.get('/cat/foo', function (ctx, next) {})
+  v3.get('/baz', function (ctx, next) {})
+
+  test.strictEqual(v3.routes.length, 2)
+
+  let baz = v3.getRoute('baz')
+  let cat = v3.getRoute('cat/foo')
+  let cat2 = v3.getRoute('/cat/foo')
+
+  test.strictEqual(baz.route, '/baz')
+  test.strictEqual(cat.route, '/cat/foo')
+  test.strictEqual(cat2.route, '/cat/foo')
+  test.strictEqual(cat.route, cat2.route)
+  done()
+})
+
+test('should `.getRoute` throw TypeError if `name` not a string', function (done) {
+  function fixture () {
+    router.getRoute(123)
+  }
+  test.throws(fixture, TypeError)
+  test.throws(fixture, /expect `name` to be a string/)
   done()
 })

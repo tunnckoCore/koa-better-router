@@ -244,6 +244,46 @@ KoaBetterRouter.prototype.addRoute = function addRoute (method, route, fns) {
 }
 
 /**
+ * > Get a route by `name`. Name of each route is its
+ * pathname or route. For example: the `name`
+ * of `.get('/cat/foo')` route is `/cat/foo`, but if
+ * you pass `cat/foo` - it will work too.
+ *
+ * **Example**
+ *
+ * ```js
+ * let router = require('koa-better-router')().loadMethods()
+ *
+ * router.get('/cat/foo', function (ctx, next) {})
+ * router.get('/baz', function (ctx, next) {})
+ *
+ * console.log(router.getRoute('baz'))      // => Route Object
+ * console.log(router.getRoute('cat/foo'))  // => Route Object
+ * console.log(router.getRoute('/cat/foo')) // => Route Object
+ * ```
+ *
+ * @param  {String} `name` name of the Route Object
+ * @return {Object} Route Object
+ * @api public
+ */
+
+KoaBetterRouter.prototype.getRoute = function getRoute (name) {
+  if (typeof name !== 'string') {
+    throw new TypeError('.getRoute: expect `name` to be a string')
+  }
+  let res = null
+  for (let route of this.routes) {
+    name = name[0] === '/' ? name.slice(1) : name
+    let isOk = name === route.route.slice(1)
+    if (isOk) {
+      res = route
+      break
+    }
+  }
+  return res
+}
+
+/**
  * > Groups multiple _"Route Objects"_ into one which middlewares
  * will be these middlewares from the last "source". So let say
  * you have `dest` route with 2 middlewares appended to it and

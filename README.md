@@ -15,6 +15,7 @@ powerful, flexible and RESTful APIs for enterprise easily!
   * [.loadMethods](#loadmethods)
   * [.createRoute](#createroute)
   * [.addRoute](#addroute)
+  * [.getRoute](#getroute)
   * [.groupRoutes](#grouproutes)
   * [.middleware](#middleware)
   * [.legacyMiddleware](#legacymiddleware)
@@ -196,7 +197,28 @@ app.listen(4290, () => {
 })
 ```
 
-### [.groupRoutes](index.js#L297)
+### [.getRoute](index.js#L270)
+> Get a route by `name`. Name of each route is its pathname or route. For example: the `name` of `.get('/cat/foo')` route is `/cat/foo`, but if you pass `cat/foo` - it will work too.
+
+**Params**
+
+* `name` **{String}**: name of the Route Object    
+* `returns` **{Object}**: Route Object  
+
+**Example**
+
+```js
+let router = require('koa-better-router')().loadMethods()
+
+router.get('/cat/foo', function (ctx, next) {})
+router.get('/baz', function (ctx, next) {})
+
+console.log(router.getRoute('baz'))      // => Route Object
+console.log(router.getRoute('cat/foo'))  // => Route Object
+console.log(router.getRoute('/cat/foo')) // => Route Object
+```
+
+### [.groupRoutes](index.js#L337)
 > Groups multiple _"Route Objects"_ into one which middlewares will be these middlewares from the last "source". So let say you have `dest` route with 2 middlewares appended to it and the `src1` route has 3 middlewares, the final (returned) route object will have these 3 middlewares from `src1` not the middlewares from `dest`. Make sense? If not this not make sense for you, please open an issue here, so we can discuss and change it (then will change it in the [koa-rest-router][] too, because there the things with method `.groupResource` are the same).
 
 **Params**
@@ -238,7 +260,7 @@ app.listen(2222, () => {
 })
 ```
 
-### [.middleware](index.js#L365)
+### [.middleware](index.js#L405)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 **Params**
@@ -284,7 +306,7 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L445)
+### [.legacyMiddleware](index.js#L485)
 > Converts the modern middleware routes to generator functions using [koa-convert][].back under the hood. It is sugar for the `.middleware(true)` or `.middleware({ legacy: true })`
 
 * `returns` **{Function|GeneratorFunction}**  
