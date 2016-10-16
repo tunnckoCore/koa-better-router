@@ -149,8 +149,7 @@ KoaBetterRouter.prototype.createRoute = function createRoute (method, route, fns
   }
 
   let parts = method.split(' ')
-  method = parts[0] || 'get'
-  method = method.toUpperCase()
+  method = parts[0].toUpperCase()
 
   if (typeof route === 'function') {
     middlewares = [route].concat(middlewares)

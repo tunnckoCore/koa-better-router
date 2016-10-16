@@ -13,7 +13,7 @@
     "test": "npm run coverage",
     "posttest": "npm run lint:coverage",
     "coverage": "nyc node test.js",
-    "lint:coverage": "nyc check-coverage --lines 100 --branches 97 --statements 100 --functions 100",
+    "lint:coverage": "nyc check-coverage --lines 100 --branches 100 --statements 100 --functions 100",
     "report-coverage": "nyc report --reporter=text-lcov | coveralls",
     "prerelease": "npm test",
     "release": "standard-version --sign --no-verify",
