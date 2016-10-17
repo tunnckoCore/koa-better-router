@@ -11,7 +11,7 @@ let utils = require('./utils')
 
 /**
  * > Initialize `KoaBetterRouter` with optional `options`
- * which are directtly passed to `path-match` and in
+ * which are directtly passed to [path-match][] and in
  * addition we have two more `legacy` and `prefix`.
  *
  * **Example**
@@ -27,7 +27,7 @@ let utils = require('./utils')
  *
  * // can use generator middlewares
  * api.get('/foobar', function * (next) {
- *   this.body = `Foo Bar Baz! ${ctx.route.prefix}`
+ *   this.body = `Foo Bar Baz! ${this.route.prefix}`
  *   yield next
  * })
  *
@@ -58,7 +58,7 @@ function KoaBetterRouter (options) {
 
 /**
  * > Load the HTTP verbs as methods on instance. If you
- * not "load" them you can just use `.addRoute` method.
+ * not "load" them you can just use [.addRoute](#addroute) method.
  * If you "load" them, you will have method for each item
  * on [methods][] array - such as `.get`, `.post`, `.put` etc.
  *
@@ -103,7 +103,8 @@ KoaBetterRouter.prototype.loadMethods = function loadMethods () {
 }
 
 /**
- * > Just creates route object without adding it to `this.routes` array.
+ * > Just creates _"Route Object"_ without adding it to `this.routes` array,
+ * used by [.addRoute](#addroute) method.
  *
  * **Example**
  *
@@ -262,7 +263,7 @@ KoaBetterRouter.prototype.addRoute = function addRoute (method, route, fns) {
  * ```
  *
  * @param  {String} `name` name of the Route Object
- * @return {Object} Route Object
+ * @return {Object|Null} Route Object, or `null` if not found
  * @api public
  */
 
@@ -286,7 +287,7 @@ KoaBetterRouter.prototype.getRoute = function getRoute (name) {
  * > Concats any number of arguments (arrays of route objects) to
  * the `this.routes` array. Think for it like
  * registering routes. Can be used in combination
- * with `.createRoute` and `.getRoute`.
+ * with [.createRoute](#createroute) and [.getRoute](#getroute).
  *
  * **Example**
  *
@@ -389,7 +390,8 @@ KoaBetterRouter.prototype.getRoutes = function getRoutes () {
  * let Koa = require('koa')
  * let app = new Koa()
  *
- * router.routes = router.routes.concat(baz)
+ * router.addRoutes(baz)
+ *
  * app.use(router.middleware())
  * app.listen(2222, () => {
  *   console.log('Server listening on http://localhost:2222')
@@ -403,7 +405,7 @@ KoaBetterRouter.prototype.getRoutes = function getRoutes () {
  * @param  {Object} `dest` known as _"Route Object"_
  * @param  {Object} `src1` second _"Route Object"_
  * @param  {Object} `src2` third _"Route Object"_
- * @return {Object} totally new _"Route Object"_ using `.createRotue` under the hood
+ * @return {Object} totally new _"Route Object"_ using [.createRoute](#createroute) under the hood
  * @api public
  */
 
@@ -527,7 +529,7 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
 /**
  * > Converts the modern middleware routes to generator functions
  * using [koa-convert][].back under the hood. It is sugar for
- * the `.middleware(true)` or `.middleware({ legacy: true })`
+ * the [.middleware(true)](#middleware) or `.middleware({ legacy: true })`
  *
  * **Example**
  *
