@@ -1,6 +1,6 @@
 # [koa-better-router][author-www-url] [![npmjs.com][npmjs-img]][npmjs-url] [![The MIT License][license-img]][license-url] [![npm downloads][downloads-img]][downloads-url] 
 
-> Fast, simple, smart and correct routing for [koa][], using [path-match][]. Foundation for building powerful, flexible and RESTful APIs easily.
+> Stable and lovely router for [koa][], using [path-match][]. Foundation for building powerful, flexible and RESTful APIs easily.
 
 [![code climate][codeclimate-img]][codeclimate-url] [![standard code style][standard-img]][standard-url] [![travis build status][travis-img]][travis-url] [![coverage status][coveralls-img]][coveralls-url] [![dependency status][david-img]][david-url]
 
@@ -19,7 +19,8 @@ powerful, flexible and RESTful APIs for enterprise easily!
 - **small:** very small on dependencies - curated and only most needed
 - **backward compatible:** works on koa v1 - use `.legacyMiddleware`
 - **maintainability:** very small, beautiful, maintainable and commented codebase
-- **stable:** strict semantic versioning and very well documented
+- **stability:** strict semantic versioning and very well documented
+- **tested:** very well tested with 100% coverage
 - **lovely:** ~500 downloads for the first 2 days
 - **open:** love PRs for features, issues and recipes
 
