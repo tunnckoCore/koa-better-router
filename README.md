@@ -7,6 +7,22 @@
 You may also be interested in [koa-rest-router][]. It uses this router for creating
 powerful, flexible and RESTful APIs for enterprise easily!
 
+## Highlights
+- **production:** ready for and used in
+- **foundation:** very simple core for building more powerful routers such as [koa-rest-router][]
+- **composability:** group multiple routes and multiple routers - see `.groupRoutes` and `.addRoutes`
+- **flexibility:** multiple prefixes on same router
+- **compatibility:** accepts both old and modern middlewares without deprecation messages
+- **powerful:** multiple routers on same [koa][] app - even can combine multiple routers
+- **light:** not poluting your router instance and app - see `.loadMethods`
+- **smart:** does only what you say it to do
+- **small:** very small on dependencies - curated and only most needed
+- **backward compatible:** works on koa v1 - use `.legacyMiddleware`
+- **maintainability:** very small, beautiful, maintainable and commented codebase
+- **stable:** strict semantic versioning and very well documented
+- **lovely:** ~500 downloads for the first 2 days
+- **open:** love PRs for features, issues and recipes
+
 ## Table of Contents
 - [Install](#install)
 - [Usage](#usage)
@@ -144,7 +160,7 @@ console.log(route.match('/api/users')) // => true
 console.log(route.middlewares.length)  // => 3
 ```
 
-### [.addRoute](index.js#L240)
+### [.addRoute](index.js#L239)
 > Powerful method to add `route` if you don't want to populate you router instance with dozens of methods. The `method` can be just HTTP verb or `method` plus `route` something like `'GET /users'`. Both modern and generators middlewares can be given too, and can be combined too. **Adds routes to `this.routes` array**.
 
 **Params**
@@ -199,7 +215,7 @@ app.listen(4290, () => {
 })
 ```
 
-### [.getRoute](index.js#L270)
+### [.getRoute](index.js#L269)
 > Get a route by `name`. Name of each route is its pathname or route. For example: the `name` of `.get('/cat/foo')` route is `/cat/foo`, but if you pass `cat/foo` - it will work too.
 
 **Params**
@@ -220,7 +236,7 @@ console.log(router.getRoute('cat/foo'))  // => Route Object
 console.log(router.getRoute('/cat/foo')) // => Route Object
 ```
 
-### [.addRoutes](index.js#L326)
+### [.addRoutes](index.js#L325)
 > Concats any number of arguments (arrays of route objects) to the `this.routes` array. Think for it like registering routes. Can be used in combination with `.createRoute` and `.getRoute`.
 
 **Params**
@@ -257,7 +273,7 @@ router.addRoutes(foo, baz)
 console.log(router.routes.length) // 2
 ```
 
-### [.getRoutes](index.js#L356)
+### [.getRoutes](index.js#L355)
 > Simple method that just returns `this.routes`, which is array of route objects.
 
 * `returns` **{Array}**: array of route objects  
@@ -279,7 +295,7 @@ console.log(router.routes.length) // 2
 console.log(router.getRoutes().length) // 2
 ```
 
-### [.groupRoutes](index.js#L411)
+### [.groupRoutes](index.js#L410)
 > Groups multiple _"Route Objects"_ into one which middlewares will be these middlewares from the last "source". So let say you have `dest` route with 2 middlewares appended to it and the `src1` route has 3 middlewares, the final (returned) route object will have these 3 middlewares from `src1` not the middlewares from `dest`. Make sense? If not this not make sense for you, please open an issue here, so we can discuss and change it (then will change it in the [koa-rest-router][] too, because there the things with method `.groupResource` are the same).
 
 **Params**
@@ -321,7 +337,7 @@ app.listen(2222, () => {
 })
 ```
 
-### [.middleware](index.js#L474)
+### [.middleware](index.js#L473)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 **Params**
@@ -367,7 +383,7 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L554)
+### [.legacyMiddleware](index.js#L553)
 > Converts the modern middleware routes to generator functions using [koa-convert][].back under the hood. It is sugar for the `.middleware(true)` or `.middleware({ legacy: true })`
 
 * `returns` **{Function|GeneratorFunction}**  
