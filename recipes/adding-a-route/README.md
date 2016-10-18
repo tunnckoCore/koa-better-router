@@ -4,7 +4,7 @@ In this recipe you will learn more about how to add a route to your router and m
 
 By default this router comes with no methods such as `.get`, `.post` and etc HTTP verbs. If you want them you should call `.loadMethods` before anything other.
 
-**Example 1**
+**Example 1** - `example1.js`
 
 ```js
 let Router = require('koa-better-router')
@@ -29,13 +29,12 @@ First argment is HTTP verb, such as GET/POST/DELETE/PUT. Actually it can be any 
 
 Or third argument can be array of middleware functions. Middlewares can be both normal functions, also called _"modern"_ - koa v2, or generator functions, known as _"old"_ middleware - koa v1.
 
-**Example 2**
+**Example 2** - `example2.js`
 
 ```js
 let body = require('koa-better-body')()
 let router = require('koa-better-router')()
 let form = require('./form')
-let result = require('./result')
 
 router.addRoute('GET', '/foo/bar', function (ctx, next) {
   ctx.type = 'html'
@@ -75,7 +74,7 @@ app.listen(4321, () => {
 
 Or the another signature is just sugar for above. You can pass signle string as first argument, which string may look like `'GET /users'`.
 
-**Example 3**
+**Example 3** - `example3.js`
 
 ```js
 let Router = require('koa-better-router')
@@ -98,7 +97,7 @@ app.listen(4444, () => {
 
 You may notice from above example that you can pass different prefixes for your router. But you also can add this `prefix` option to the `.middleware` method, so you can have multiple prefixes on same router. Just see below example.
 
-**Example 4**
+**Example 4** - `example4.js`
 
 ```js
 let router = require('koa-better-router')({
