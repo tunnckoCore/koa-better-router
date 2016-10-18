@@ -1,6 +1,6 @@
 # Adding a route
 
-In this recipes you learn more about how to add a route to your router and more things that you should be aware of.
+In this recipe you will learn more about how to add a route to your router and more things that you should be aware of.
 
 By default this router comes with no methods such as `.get`, `.post` and etc HTTP verbs. If you want them you should call `.loadMethods` before anything other.
 
