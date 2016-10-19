@@ -94,7 +94,7 @@ app.listen(3232, () => {
 
 Try it out using `node recipes/grouping/example2.js` and you will see bodies from both routes when you open localhost and navigate to `/foo/bar/baz/qux` page. 
 
-## Extending routers
+## Correct extending routers
 
 Okey, we already know how to group different routes. But what about if we want to group different routers into one API router. Let's say we have one router for the `users` and another for `cats`, what we should do then? It's easy. We initializing one router, use `.extend` on it to create three routes for users - one for listing the users, another for creating a user and third route for showing specific user. And second router that does same things but for cats. And all this we want to be accessible through the `/api` endpoint.
 
@@ -114,7 +114,7 @@ let apiRouter = require('koa-better-router')({
 })
 
 // adds routes from usersRouter
-// to the apiRouter, then does some thing
+// to the apiRouter, then does same thing
 // for the catsRouter (.extend returns `this`)
 apiRouter.extend(usersRouter).extend(catsRouter)
 
@@ -127,23 +127,23 @@ app.use(usersRouter.middleware())
 app.use(catsRouter.middleware())
 app.use(apiRouter.middleware())
 
-app.listen(6666, () => {
+app.listen(2222, () => {
   console.log('Your server is awesome!')
   console.log('You will have these routes:')
   
-  // such as http://localhost:6666/users/new
+  // such as http://localhost:2222/users/new
   usersRouter.routes.forEach(route => {
-    console.log(`http://localhost:6666${route.path}`)
+    console.log(`http://localhost:2222${route.path}`)
   })
-  // such as http://localhost:6666/cats/new
+  // such as http://localhost:2222/cats/new
   catsRouter.routes.forEach(route => {
-    console.log(`http://localhost:6666${route.path}`)
+    console.log(`http://localhost:2222${route.path}`)
   })
-  // http://localhost:6666/api/users/new
-  // http://localhost:6666/api/cats/new
+  // http://localhost:2222/api/users/new
+  // http://localhost:2222/api/cats/new
   // etc...
   apiRouter.routes.forEach(route => {
-    console.log(`http://localhost:6666${route.path}`)
+    console.log(`http://localhost:2222${route.path}`)
   })
 })
 ```
