@@ -1,6 +1,6 @@
 # Grouping
 
-There are two kinds of grouping here - grouping routes and grouping routers. In the first one you can group multiple routes in one route, by just using `.groupRoutes` method. Another one is grouping different routers into new one using `.addRoutes`. Say you have one router with 2 routes and another router with just one route. So, you can create third router combining the routes from the first one and the route from the second one.
+There are two kinds of grouping here - grouping routes and grouping routers. In the first one you can group multiple routes in one route, by just using `.groupRoutes` method. Another one is grouping different routers into new one using `.extend` method. Say you have one router with 2 routes and another router with just one route. So, you can create third router combining the routes from the first one and the route from the second one.
 
 ## Grouping routes
 
@@ -93,3 +93,107 @@ app.listen(3232, () => {
 ```
 
 Try it out using `node recipes/grouping/example2.js` and you will see bodies from both routes when you open localhost and navigate to `/foo/bar/baz/qux` page. 
+
+## Extending routers
+
+Okey, we already know how to group different routes. But what about if we want to group different routers into one API router. Let's say we have one router for the `users` and another for `cats`, what we should do then? It's easy. We initializing one router, use `.extend` on it to create three routes for users - one for listing the users, another for creating a user and third route for showing specific user. And second router that does same things but for cats. And all this we want to be accessible through the `/api` endpoint.
+
+**ProTip:** better use [koa-rest-router](http://ghub.io/koa-rest-router) for such things.
+
+That's easy with just creating third router with `prefix: '/api'` option and using `.extend` method to combine `usersRouter` and `catsRouter`. Let's build the example.
+
+#### Example 3
+
+Try it out with `node recipes/grouping/example3.js`. The `users-router.js` and `cats-router.js` are below this example and they are actual files on this recipe folder.
+
+```js
+let usersRouter = require('./users-router')
+let catsRouter = require('./cats-router')
+let apiRouter = require('koa-better-router')({
+  prefix: '/api'
+})
+
+// adds routes from usersRouter
+// to the apiRouter, then does some thing
+// for the catsRouter (.extend returns `this`)
+apiRouter.extend(usersRouter).extend(catsRouter)
+
+// Server
+let Koa = require('koa') // koa v2
+let app = new Koa()
+
+// add the three routers to your app
+app.use(usersRouter.middleware())
+app.use(catsRouter.middleware())
+app.use(apiRouter.middleware())
+
+app.listen(6666, () => {
+  console.log('Your server is awesome!')
+  console.log('You will have these routes:')
+  
+  // such as http://localhost:6666/users/new
+  usersRouter.routes.forEach(route => {
+    console.log(`http://localhost:6666${route.path}`)
+  })
+  // such as http://localhost:6666/cats/new
+  catsRouter.routes.forEach(route => {
+    console.log(`http://localhost:6666${route.path}`)
+  })
+  // http://localhost:6666/api/users/new
+  // http://localhost:6666/api/cats/new
+  // etc...
+  apiRouter.routes.forEach(route => {
+    console.log(`http://localhost:6666${route.path}`)
+  })
+})
+```
+
+I'll separate them in different files for more clean view.
+
+**users-router.js**
+
+```js
+let router = require('koa-better-router')().loadMethods()
+
+router
+  .get('/users', (ctx, next) => {
+  	ctx.body = 'List awesome users!'
+  	return next()
+  })
+  .get('/users/new', (ctx, next) => {
+    ctx.body = 'Form for creating a new user should be here'
+    return next()
+  })
+  .get('/users/:user', (ctx, next) => {
+    ctx.body = `You are looking the ${ctx.params.user} profile!`
+    return next()
+  })
+
+module.exports = router
+```
+
+and **cats-router.js**
+
+```js
+let catsRouter = require('koa-better-router')().loadMethods()
+
+catsRouter
+  .get('/cats', (ctx, next) => {
+  	ctx.body = 'List awesome cats!'
+  	return next()
+  })
+  .get('/cats/new', (ctx, next) => {
+    ctx.body = 'Form for creating a new cat should be here'
+    return next()
+  })
+  .get('/cats/:cat', (ctx, next) => {
+    ctx.body = `You are looking the ${ctx.params.cat} profile!`
+    return next()
+  })
+
+module.exports = catsRouter
+```
+
+Hope this clarify the things? Please open an issue or pull request if there's something that is not clear enough.
+
+You can just do what you want with such flexibility.
