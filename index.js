@@ -419,6 +419,37 @@ KoaBetterRouter.prototype.groupRoutes = function groupRoutes (dest, src1, src2) 
   return utils.isObject(src2) ? this.groupRoutes(route, src2) : route
 }
 
+/**
+ * > Extends current router with routes from `router`. This
+ * `router` should be an instance of KoaBetterRouter too. That
+ * is the **correct extending/grouping** of couple of routers.
+ *
+ * **Example**
+ *
+ * ```js
+ * let router = require('koa-better-router')()
+ * let api = require('koa-better-router')({
+ *   prefix: '/api/v4'
+ * })
+ *
+ * router.addRoute('GET', '/foo/bar', () => {})
+ * router.addRoute('GET', '/api/v4/qux', () => {}) // intentional !
+ * api.addRoute('GET', '/woohoo')
+ *
+ * api.extend(router)
+ *
+ * api.routes.forEach(route => console.log(route.path))
+ * // => outputs, last one is expected
+ * // /api/v4/woohoo
+ * // /api/v4/foo/bar
+ * // /api/v4/api/v4/qux
+ * ```
+ *
+ * @param  {Object} `<router>` instance of KoaBetterRouter
+ * @return {KoaBetterRouter} `this` instance for chaining
+ * @api public
+ */
+
 KoaBetterRouter.prototype.extend = function extend (router) {
   if (!(router instanceof KoaBetterRouter)) {
     throw new TypeError('.extend: expect `router` to be instance of KoaBetterBody')

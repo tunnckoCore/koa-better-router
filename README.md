@@ -36,6 +36,7 @@ powerful, flexible and RESTful APIs for enterprise easily!
   * [.addRoutes](#addroutes)
   * [.getRoutes](#getroutes)
   * [.groupRoutes](#grouproutes)
+  * [.extend](#extend)
   * [.middleware](#middleware)
   * [.legacyMiddleware](#legacymiddleware)
 - [Related](#related)
@@ -340,7 +341,36 @@ app.listen(2222, () => {
 })
 ```
 
-### [.middleware](index.js#L475)
+### [.extend](index.js#L453)
+> Extends current router with routes from `router`. This `router` should be an instance of KoaBetterRouter too. That is the **correct extending/grouping** of couple of routers.
+
+**Params**
+
+* `<router>` **{Object}**: instance of KoaBetterRouter    
+* `returns` **{KoaBetterRouter}** `this`: instance for chaining  
+
+**Example**
+
+```js
+let router = require('koa-better-router')()
+let api = require('koa-better-router')({
+  prefix: '/api/v4'
+})
+
+router.addRoute('GET', '/foo/bar', () => {})
+router.addRoute('GET', '/api/v4/qux', () => {}) // intentional !
+api.addRoute('GET', '/woohoo')
+
+api.extend(router)
+
+api.routes.forEach(route => console.log(route.path))
+// => outputs, last one is expected
+// /api/v4/woohoo
+// /api/v4/foo/bar
+// /api/v4/api/v4/qux
+```
+
+### [.middleware](index.js#L520)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 **Params**
@@ -386,7 +416,7 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L555)
+### [.legacyMiddleware](index.js#L597)
 > Converts the modern middleware routes to generator functions using [koa-convert][].back under the hood. It is sugar for the [.middleware(true)](#middleware) or `.middleware({ legacy: true })`
 
 * `returns` **{Function|GeneratorFunction}**  
