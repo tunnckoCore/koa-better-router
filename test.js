@@ -341,6 +341,6 @@ test('should `.extend` throw TypeError if `router` is not correct instance', fun
     router.extend({foo: 'bar', routes: []})
   }
   test.throws(fixture, TypeError)
-  test.throws(fixture, /expect `router` to be instance of KoaBetterBody/)
+  test.throws(fixture, /expect `router` to be instance of KoaBetterRouter/)
   done()
 })
