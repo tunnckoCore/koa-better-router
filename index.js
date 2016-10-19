@@ -424,7 +424,6 @@ KoaBetterRouter.prototype.extend = function extend (router) {
     throw new TypeError('.extend: expect `router` to be instance of KoaBetterBody')
   }
   router.routes.forEach((route) => {
-    /* istanbul ignore next */
     if (route.prefix !== this.options.prefix) {
       route = utils.updatePrefix(this, this.options, route)
     }

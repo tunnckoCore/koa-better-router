@@ -299,6 +299,9 @@ test('should `.getRoutes` return `this.routes` array', function (done) {
 test('should be able to `.extend` routers', function (done) {
   let apiRouter = Router({ prefix: '/api' })
   let usersRouter = Router()
+  let catsRouter = Router()
+
+  catsRouter.addRoute('GET /cats', (ctx, next) => {})
 
   usersRouter.addRoute('GET /users', (ctx, next) => {})
   usersRouter.addRoute('GET /api/users/new', (ctx, next) => {})
@@ -306,11 +309,14 @@ test('should be able to `.extend` routers', function (done) {
   // this route is first, with index 0
   apiRouter.addRoute('GET /foo/bar', (ctx, next) => {})
 
+  // adds cats to users
+  usersRouter.extend(catsRouter)
+
   // appends other router routes
   // to already exsting ones
   apiRouter.extend(usersRouter)
 
-  test.strictEqual(apiRouter.routes.length, 3)
+  test.strictEqual(apiRouter.routes.length, 4)
 
   test.strictEqual(apiRouter.routes[0].prefix, '/api')
   test.strictEqual(apiRouter.routes[0].route, '/foo/bar')
@@ -323,6 +329,10 @@ test('should be able to `.extend` routers', function (done) {
   test.strictEqual(apiRouter.routes[2].prefix, '/api')
   test.strictEqual(apiRouter.routes[2].route, '/api/users/new') // !!
   test.strictEqual(apiRouter.routes[2].path, '/api/api/users/new') // !!
+
+  test.strictEqual(apiRouter.routes[3].prefix, '/api')
+  test.strictEqual(apiRouter.routes[3].route, '/cats')
+  test.strictEqual(apiRouter.routes[3].path, '/api/cats')
   done()
 })
 
