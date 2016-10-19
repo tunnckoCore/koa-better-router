@@ -35,6 +35,15 @@ utils.createPrefix = function createPrefix (prefix, pathname) {
   return `${clean}/${path}`
 }
 
+utils.updatePrefix = function updatePrefix (ctx, opts, src) {
+  let prefixed = utils.createPrefix(opts.prefix, src.route)
+  let route = utils.extend({}, src)
+  route.prefix = opts.prefix
+  route.path = prefixed
+  route.match = ctx.route(prefixed)
+  return route
+}
+
 /**
  * Expose `utils` modules
  */

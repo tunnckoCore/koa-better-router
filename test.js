@@ -32,6 +32,7 @@ test('should have `.addRoute`, `.middleware` and `legacyMiddleware` methods', fu
   test.strictEqual(typeof router.getRoutes, 'function')
   test.strictEqual(typeof router.createRoute, 'function')
   test.strictEqual(typeof router.groupRoutes, 'function')
+  test.strictEqual(typeof router.extend, 'function')
   test.strictEqual(typeof router.middleware, 'function')
   test.strictEqual(typeof router.loadMethods, 'function')
   test.strictEqual(typeof router.legacyMiddleware, 'function')
@@ -292,5 +293,44 @@ test('should add multiple routes into `this.routes`, using `.addRoutes` method',
 
 test('should `.getRoutes` return `this.routes` array', function (done) {
   test.strictEqual(router.getRoutes().length, router.routes.length)
+  done()
+})
+
+test('should be able to `.extend` routers', function (done) {
+  let apiRouter = Router({ prefix: '/api' })
+  let usersRouter = Router()
+
+  usersRouter.addRoute('GET /users', (ctx, next) => {})
+  usersRouter.addRoute('GET /api/users/new', (ctx, next) => {})
+
+  // this route is first, with index 0
+  apiRouter.addRoute('GET /foo/bar', (ctx, next) => {})
+
+  // appends other router routes
+  // to already exsting ones
+  apiRouter.extend(usersRouter)
+
+  test.strictEqual(apiRouter.routes.length, 3)
+
+  test.strictEqual(apiRouter.routes[0].prefix, '/api')
+  test.strictEqual(apiRouter.routes[0].route, '/foo/bar')
+  test.strictEqual(apiRouter.routes[0].path, '/api/foo/bar')
+
+  test.strictEqual(apiRouter.routes[1].prefix, '/api')
+  test.strictEqual(apiRouter.routes[1].route, '/users')
+  test.strictEqual(apiRouter.routes[1].path, '/api/users')
+
+  test.strictEqual(apiRouter.routes[2].prefix, '/api')
+  test.strictEqual(apiRouter.routes[2].route, '/api/users/new') // !!
+  test.strictEqual(apiRouter.routes[2].path, '/api/api/users/new') // !!
+  done()
+})
+
+test('should `.extend` throw TypeError if `router` is not correct instance', function (done) {
+  function fixture () {
+    router.extend({foo: 'bar', routes: []})
+  }
+  test.throws(fixture, TypeError)
+  test.throws(fixture, /expect `router` to be instance of KoaBetterBody/)
   done()
 })

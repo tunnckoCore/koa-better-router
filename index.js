@@ -419,6 +419,21 @@ KoaBetterRouter.prototype.groupRoutes = function groupRoutes (dest, src1, src2) 
   return utils.isObject(src2) ? this.groupRoutes(route, src2) : route
 }
 
+KoaBetterRouter.prototype.extend = function extend (router) {
+  if (!(router instanceof KoaBetterRouter)) {
+    throw new TypeError('.extend: expect `router` to be instance of KoaBetterBody')
+  }
+  router.routes.forEach((route) => {
+    /* istanbul ignore next */
+    if (route.prefix !== this.options.prefix) {
+      route = utils.updatePrefix(this, this.options, route)
+    }
+
+    this.routes.push(route)
+  })
+  return this
+}
+
 /**
  * > Active all routes that are defined. You can pass `opts`
  * to pass different `prefix` for your routes. So you can
@@ -488,15 +503,12 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
   return this.options.legacy
     ? this.legacyMiddleware()
     : (ctx, next) => {
-      for (const route of this.routes) {
+      for (let route of this.routes) {
         if (ctx.method !== route.method) {
           continue
         }
         if (options.prefix !== route.prefix) {
-          let prefixed = utils.createPrefix(options.prefix, route.pathname)
-          route.prefix = options.prefix
-          route.path = prefixed
-          route.match = this.route(prefixed)
+          route = utils.updatePrefix(this, options, route)
         }
 
         // - if there's a match and no params it will be empty object!
