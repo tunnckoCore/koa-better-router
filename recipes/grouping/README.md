@@ -196,4 +196,47 @@ module.exports = catsRouter
 
 Hope this clarify the things? Please open an issue or pull request if there's something that is not clear enough.
 
-You can just do what you want with such flexibility.
+You can just do what you want with such flexibility. 
+
+## Incorrect extending of routers
+
+Actually extending a router can be done in one more variant by just using `.addRoutes(usersRouter.routes, catsRouter.routes)` but later if you wanna print them like I did in the `.listen`  you will get unexpected results as output.
+
+Let's use above example, but replace
+
+```js
+// adds routes from usersRouter
+// to the apiRouter, then does same thing
+// for the catsRouter (.extend returns `this`)
+apiRouter.extend(usersRouter).extend(catsRouter)
+```
+
+with this to use `.addRoutes` instead
+
+```js
+// combine them
+apiRouter.addRoutes(usersRouter.routes, catsRouter.routes)
+```
+
+and try to output the actual routes of `apiRouter`
+
+```js
+app.listen(2222, () => {
+  apiRouter.routes.forEach(route => {
+    console.log(`http://localhost:2222${route.path}`)
+  })
+})
+```
+
+ you will get such results
+
+```shell
+http://localhost:6666/users
+http://localhost:6666/users/new
+http://localhost:6666/users/:user
+http://localhost:6666/cats
+http://localhost:6666/cats/new
+http://localhost:6666/cats/:cat
+```
+
+but actually when you open `http://localhost:6666/users` for example you don't have such route, but when open `http://localhost:6666/api/users` you have correct body. It is because `.middleware` does the trick under the hood and it is smart enough to understand what happens, but does not updates the `apiRouter.routes` array. So if you want to output router routes later in you application you **must not** rely on the `.addRoutes` and **should use** `.extend` method.

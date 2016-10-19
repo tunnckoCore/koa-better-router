@@ -4,7 +4,7 @@ let router = require('../../index')().loadMethods()
 
 router
   .get('/users', (ctx, next) => {
-    ctx.body = 'List awesome users!'
+    ctx.body = `List awesome users! ${ctx.route.path}`
     return next()
   })
   .get('/users/new', (ctx, next) => {

@@ -24,18 +24,10 @@ app.listen(2222, () => {
   console.log('Your server is awesome!')
   console.log('You will have these routes:')
 
-  // such as http://localhost:2222/users/new
-  usersRouter.routes.forEach(route => {
-    console.log(`http://localhost:2222${route.path}`)
-  })
-  // such as http://localhost:2222/cats/new
-  catsRouter.routes.forEach(route => {
-    console.log(`http://localhost:2222${route.path}`)
-  })
-  // http://localhost:2222/api/users/new
-  // http://localhost:2222/api/cats/new
-  // etc...
-  apiRouter.routes.forEach(route => {
+  let allRoutes = usersRouter.routes.concat(catsRouter.routes)
+  allRoutes = allRoutes.concat(apiRouter.routes)
+
+  allRoutes.forEach(route => {
     console.log(`http://localhost:2222${route.path}`)
   })
 })
