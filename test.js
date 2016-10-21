@@ -95,7 +95,7 @@ test('should `.addRoute` be able to accept single function as `route`', function
 })
 
 test('should `.addRoute` accept `route` to be array of middlewares', function (done) {
-  let apiRouter = Router()
+  let apiRouter = Router({ prefix: '/api' })
   apiRouter.addRoute('GET /companies', [
     function (ctx, next) {
       ctx.body = 'Hello world!'
@@ -107,7 +107,7 @@ test('should `.addRoute` accept `route` to be array of middlewares', function (d
     }
   ])
 
-  app.use(apiRouter.middleware({ prefix: '/api' }))
+  app.use(apiRouter.middleware())
   request(app.callback()).get('/api/companies')
     .expect(200, /Hello world! Try/)
     .expect(/companies and/)
@@ -135,10 +135,11 @@ test('should `.createRoute` just return route object', function (done) {
   done()
 })
 
-test('should `.middleware` return generator function when opts.legacy: true', function (done) {
+test('should `.legacyMiddleware` return generator function', function (done) {
   let router = Router()
-  let ret = router.middleware({ legacy: true })
-  test.strictEqual(isGen(ret), true)
+  let ret = router.middleware()
+  test.strictEqual(isGen(ret), false)
+  test.strictEqual(typeof ret, 'function')
   test.strictEqual(isGen(router.legacyMiddleware()), true)
   done()
 })
@@ -220,19 +221,21 @@ test('should respect routes defined order (useful on REST APIs)', function (done
 test('should group multiple routes into one using `.groupRoutes`', function (done) {
   let app = new Koa()
   let api = Router({ prefix: '/api/v3' })
+  let ruter = Router()
 
-  let foo = router.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
-  let bar = router.createRoute('GET /bar/dog', function (ctx, next) {})
-  let cat = router.createRoute('GET /cat', function (ctx, next) {
+  let foo = ruter.createRoute('GET /foo/qux/xyz', function (ctx, next) {})
+  let bar = ruter.createRoute('GET /bar/dog', function (ctx, next) {})
+  let cat = ruter.createRoute('GET /cat', function (ctx, next) {
     ctx.body = 'okey barrrr'
     return next()
   })
 
-  let baz = router.groupRoutes(foo, bar, cat)
+  let baz = ruter.groupRoutes(foo, bar, cat)
   test.strictEqual(baz.route, '/foo/qux/xyz/bar/dog/cat')
   test.strictEqual(baz.path, '/foo/qux/xyz/bar/dog/cat')
 
-  api.routes = api.routes.concat(baz)
+  ruter.addRoutes(baz)
+  api.extend(ruter)
   app.use(api.middleware())
 
   request(app.callback())

@@ -11,31 +11,37 @@ let utils = require('./utils')
 
 /**
  * > Initialize `KoaBetterRouter` with optional `options`
- * which are directtly passed to [path-match][] and in
- * addition we have two more `legacy` and `prefix`.
+ * which are directly passed to [path-match][] and in
+ * addition we have one more - `prefix`.
  *
  * **Example**
  *
  * ```js
- * let router = require('koa-better-router')
- * let api = router({ prefix: '/api' }).loadMethods()
+ * let Router = require('koa-better-router')
+ * let router = Router().loadMethods()
  *
- * api.get('/', (ctx, next) => {
+ * router.get('/', (ctx, next) => {
  *   ctx.body = `Hello world! Prefix: ${ctx.route.prefix}`
  *   return next()
  * })
  *
  * // can use generator middlewares
- * api.get('/foobar', function * (next) {
+ * router.get('/foobar', function * (next) {
  *   this.body = `Foo Bar Baz! ${this.route.prefix}`
  *   yield next
  * })
  *
+ * let api = Router({ prefix: '/api' })
+ *
+ * // add `router`'s routes to api router
+ * api.extend(router)
+ *
+ * // The server
  * let Koa = require('koa') // Koa v2
  * let app = new Koa()
  *
+ * app.use(router.middleware())
  * app.use(api.middleware())
- * app.use(api.middleware({ prefix: '/' }))
  *
  * app.listen(4444, () => {
  *   console.log('Try out /, /foobar, /api/foobar and /api')
@@ -83,6 +89,9 @@ function KoaBetterRouter (options) {
  * console.log(router.post) // => function
  * console.log(router.put)  // => function
  * console.log(router.del)  // => function
+ * console.log(router.addRoute) // => function
+ * console.log(router.middleware) // => function
+ * console.log(router.legacyMiddleware) // => function
  * ```
  *
  * @return {KoaBetterRouter} `this` instance for chaining
@@ -274,8 +283,7 @@ KoaBetterRouter.prototype.getRoute = function getRoute (name) {
   let res = null
   for (let route of this.routes) {
     name = name[0] === '/' ? name.slice(1) : name
-    let isOk = name === route.route.slice(1)
-    if (isOk) {
+    if (name === route.route.slice(1)) {
       res = route
       break
     }
@@ -396,7 +404,7 @@ KoaBetterRouter.prototype.getRoutes = function getRoutes () {
  * app.listen(2222, () => {
  *   console.log('Server listening on http://localhost:2222')
  *
- *   router.routes.forEach((route) => {
+ *   router.getRoutes().forEach((route) => {
  *     console.log(`${route.method} http://localhost:2222${route.path}`)
  *   })
  * })
@@ -438,8 +446,8 @@ KoaBetterRouter.prototype.groupRoutes = function groupRoutes (dest, src1, src2) 
  *
  * api.extend(router)
  *
- * api.routes.forEach(route => console.log(route.path))
- * // => outputs, last one is expected
+ * api.getRoutes().forEach(route => console.log(route.path))
+ * // => outputs (the last one is expected)
  * // /api/v4/woohoo
  * // /api/v4/foo/bar
  * // /api/v4/api/v4/qux
@@ -476,107 +484,81 @@ KoaBetterRouter.prototype.extend = function extend (router) {
  *
  * ```js
  * let Router = require('koa-better-router')
- * let api = new Router({ prefix: '/api' })
- * let router = Router({ legacy: true })
+ * let api = Router({ prefix: '/api' })
  *
- * router.loadMethods().get('GET /',
- *   (ctx, next) => {
+ * api.loadMethods()
+ *   .get('GET /', (ctx, next) => {
  *     ctx.body = 'Hello world!'
  *     return next()
- *   },
- *   (ctx, next) => {
- *     ctx.body = `${ctx.body} Try out /api/users and /foo/users`
+ *   }, (ctx, next) => {
+ *     ctx.body = `${ctx.body} Try out /api/users too`
  *     return next()
  *   })
  *
- * api.loadMethods()
  * api.get('/users', function * (next) {
- *   this.body = `Prefix: ${this.route.prefix}, path: ${this.route.pathname}`
+ *   this.body = `Prefix: ${this.route.prefix}, path: ${this.route.path}`
  *   yield next
  * })
  *
- * let app = require('koa')() // koa v1
+ * // Server part
+ * let Koa = require('koa')
+ * let app = new Koa()
  *
- * // no need to pass `legacy`, because of the constructor options
- * app.use(router.middleware())
- *
- * // initialize `api` router with `legacy true`,
- * // because we don't have legacy defined in api router constructor
- * app.use(api.middleware(true))
- * app.use(api.middleware({ legacy: true, prefix: '/foo' }))
+ * // Register the router as Koa middleware
+ * app.use(api.middleware())
  *
  * app.listen(4321, () => {
- *   console.log('Legacy Koa v1 server is started on port 4321')
+ *   console.log('Modern Koa v2 server is started on port 4321')
  * })
  * ```
  *
- * @param  {Object|Boolean} `[opts]` optional, safely merged with options from constructor,
- *   if you pass boolean true, it understands it as `opts.legacy`
- * @return {GeneratorFunction|Function} by default modern [koa][] middleware
- *   function, but if you pass `opts.legacy: true` it will return generator function
+ * @return {Function} modern [koa][] v2 middleware
  * @api public
  */
 
-KoaBetterRouter.prototype.middleware = function middleware (opts) {
-  opts = typeof opts === 'object'
-    ? utils.extend({ legacy: false }, opts)
-    : { legacy: opts }
-  opts.legacy = typeof opts.legacy === 'boolean'
-    ? opts.legacy
-    : false
-
-  // allows multiple prefixes
-  // on one router
-  let options = utils.extend({}, this.options, opts)
-  this.options = options
-
-  return this.options.legacy
-    ? this.legacyMiddleware()
-    : (ctx, next) => {
-      for (let route of this.routes) {
-        if (ctx.method !== route.method) {
-          continue
-        }
-        if (options.prefix !== route.prefix) {
-          route = utils.updatePrefix(this, options, route)
-        }
-
-        // - if there's a match and no params it will be empty object!
-        // - if there are some params they will be here
-        // - if path not match it will be boolean `false`
-        let match = route.match(ctx.path, ctx.params)
-        if (!match) {
-          continue
-        }
-
-        route.params = match
-        route.middlewares = route.middlewares.map((fn) => {
-          return utils.isGenerator(fn) ? utils.convert(fn) : fn
-        })
-
-        // may be useful for the user
-        ctx.route = route
-        ctx.params = route.params
-
-        // calls next middleware on success
-        // returns rejected promises on error
-        return utils.compose(route.middlewares)(ctx).then(() => next())
+KoaBetterRouter.prototype.middleware = function middleware () {
+  return (ctx, next) => {
+    for (let route of this.routes) {
+      if (ctx.method !== route.method) {
+        continue
       }
-      // called when request path not found on routes
-      // ensure calling next middleware which is after the router
-      return next()
+
+      // - if there's a match and no params it will be empty object!
+      // - if there are some params they will be here
+      // - if path not match it will be boolean `false`
+      let match = route.match(ctx.path, ctx.params)
+      if (!match) {
+        continue
+      }
+
+      route.params = match
+      route.middlewares = route.middlewares.map((fn) => {
+        return utils.isGenerator(fn) ? utils.convert(fn) : fn
+      })
+
+      // may be useful for the user
+      ctx.route = route
+      ctx.params = route.params
+
+      // calls next middleware on success
+      // returns rejected promises on error
+      return utils.compose(route.middlewares)(ctx).then(() => next())
     }
+    // called when request path not found on routes
+    // ensure calling next middleware which is after the router
+    return next()
+  }
 }
 
 /**
- * > Converts the modern middleware routes to generator functions
- * using [koa-convert][].back under the hood. It is sugar for
- * the [.middleware(true)](#middleware) or `.middleware({ legacy: true })`
+ * > Explicitly use this method when want
+ * to use the router on **Koa@1**,
+ * otherwise use [.middleware](#middleware) method!
  *
  * **Example**
  *
  * ```js
- * let app = require('koa') // koa v1.x
+ * let app = require('koa')() // koa v1.x
  * let router = require('koa-better-router')()
  *
  * router.addRoute('GET', '/users', function * (next) {
@@ -590,7 +572,7 @@ KoaBetterRouter.prototype.middleware = function middleware (opts) {
  * })
  * ```
  *
- * @return {Function|GeneratorFunction}
+ * @return {GeneratorFunction} old [koa][] v1 middleware
  * @api public
  */
 
