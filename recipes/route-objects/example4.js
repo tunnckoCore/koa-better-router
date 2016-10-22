@@ -39,8 +39,7 @@ let Koa = require('koa') // koa v2
 let app = new Koa()
 
 app.use(fooRouter.middleware())
-app.use(fooRouter.middleware({ prefix: '/api' }))
 
 app.listen(5000, () => {
-  console.log('Open http://localhost:5000/ or http://localhost:5000/api')
+  console.log('Open http://localhost:5000/')
 })

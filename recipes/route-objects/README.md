@@ -8,7 +8,6 @@ So what the Route Object is. It is plain JavaScript object with few properties s
 
 - `method` - HTTP request method of the route, such as `GET`, `POST` and `DELETE`
 - `route` - user-defined path, such as `/foo/bar`
-- `pathname` - alias of `route`, but not use it, I'm thinking to deprecate it
 - `prefix` - router prefix for the routes, by default it is `/`
 - `path` - combines `prefix` and `route`,  such as `/api/foo` if prefix is `/api` and route is `/foo`
 - `match` - function which checks if `route` path match the incoming `ctx.path`
@@ -73,11 +72,12 @@ Let's see usage of `.addRoutes` and `.createRoute`/`.getRoute` in second example
 
 ```js
 let router = require('koa-better-router')()
+let extend = require('extend-shallow')
 
 let foo = router.createRoute('GET /foo', (ctx, next) => {})
 console.log(foo)
 
-let foo22 = router.getRoute('foo')
+let foo22 = extend({}, foo)
 console.log(foo22) // same as above
 
 // let's change `foo22` a bit
@@ -220,10 +220,9 @@ let Koa = require('koa') // koa v2
 let app = new Koa()
 
 app.use(fooRouter.middleware())
-app.use(fooRouter.middleware({ prefix: '/api' }))
 
 app.listen(5000, () => {
-  console.log('Open http://localhost:5000/ or http://localhost:5000/api')
+  console.log('Open http://localhost:5000/')
 })
 ```
 

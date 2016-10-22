@@ -95,30 +95,4 @@ app.listen(4444, () => {
 })
 ```
 
-You may notice from above example that you can pass different prefixes for your router. But you also can add this `prefix` option to the `.middleware` method, so you can have multiple prefixes on same router. Just see below example.
-
-**Example 4** - `example4.js`
-
-```js
-let router = require('koa-better-router')({
-  prefix: '/api'
-})
-
-router.addRoute('GET /users', (ctx, next) => {
-  ctx.body = `Route is ${ctx.route.route} and prefix is ${ctx.route.prefix}`
-  ctx.body = `${ctx.body}. So path is ${ctx.route.path}`
-  return next()
-})
-
-// Server
-let Koa = require('koa')
-let app = new Koa()
-
-app.use(router.middleware())
-app.use(router.middleware({ prefix: '/foo' }))
-
-app.listen(3333, () => {
-  console.log('Open http://localhost:3333/api/users')
-  console.log('And try http://localhost:3333/foo/users')
-})
-```
+You may notice from above example that you can pass different prefixes for your router.

@@ -1,11 +1,12 @@
 'use strict'
 
+let extend = require('extend-shallow')
 let router = require('../../index')()
 
 let foo = router.createRoute('GET /foo', (ctx, next) => {})
 console.log(foo)
 
-let foo22 = router.getRoute('foo')
+let foo22 = extend({}, foo)
 console.log(foo22) // same as above
 
 // let's change `foo22` a bit
