@@ -41,6 +41,7 @@ powerful, flexible and RESTful APIs for enterprise easily!
   * [.legacyMiddleware](#legacymiddleware)
 - [Related](#related)
 - [Contributing](#contributing)
+  * [Contributing Recipes](#contributing-recipes)
 
 ## Install
 
@@ -171,7 +172,7 @@ console.log(route.match('/api/users')) // => true
 console.log(route.middlewares.length)  // => 3
 ```
 
-### [.addRoute](index.js#L249)
+### [.addRoute](index.js#L248)
 > Powerful method to add `route` if you don't want to populate you router instance with dozens of methods. The `method` can be just HTTP verb or `method` plus `route` something like `'GET /users'`. Both modern and generators middlewares can be given too, and can be combined too. **Adds routes to `this.routes` array**.
 
 **Params**
@@ -226,7 +227,7 @@ app.listen(4290, () => {
 })
 ```
 
-### [.getRoute](index.js#L279)
+### [.getRoute](index.js#L278)
 > Get a route by `name`. Name of each route is its pathname or route. For example: the `name` of `.get('/cat/foo')` route is `/cat/foo`, but if you pass `cat/foo` - it will work too.
 
 **Params**
@@ -247,7 +248,7 @@ console.log(router.getRoute('cat/foo'))  // => Route Object
 console.log(router.getRoute('/cat/foo')) // => Route Object
 ```
 
-### [.addRoutes](index.js#L334)
+### [.addRoutes](index.js#L333)
 > Concats any number of arguments (arrays of route objects) to the `this.routes` array. Think for it like registering routes. Can be used in combination with [.createRoute](#createroute) and [.getRoute](#getroute).
 
 **Params**
@@ -284,7 +285,7 @@ router.addRoutes(foo, baz)
 console.log(router.routes.length) // 2
 ```
 
-### [.getRoutes](index.js#L364)
+### [.getRoutes](index.js#L363)
 > Simple method that just returns `this.routes`, which is array of route objects.
 
 * `returns` **{Array}**: array of route objects  
@@ -306,7 +307,7 @@ console.log(router.routes.length) // 2
 console.log(router.getRoutes().length) // 2
 ```
 
-### [.groupRoutes](index.js#L420)
+### [.groupRoutes](index.js#L419)
 > Groups multiple _"Route Objects"_ into one which middlewares will be these middlewares from the last "source". So let say you have `dest` route with 2 middlewares appended to it and the `src1` route has 3 middlewares, the final (returned) route object will have these 3 middlewares from `src1` not the middlewares from `dest`. Make sense? If not this not make sense for you, please open an issue here, so we can discuss and change it (then will change it in the [koa-rest-router][] too, because there the things with method `.groupResource` are the same).
 
 **Params**
@@ -349,7 +350,7 @@ app.listen(2222, () => {
 })
 ```
 
-### [.extend](index.js#L461)
+### [.extend](index.js#L460)
 > Extends current router with routes from `router`. This `router` should be an instance of KoaBetterRouter too. That is the **correct extending/grouping** of couple of routers.
 
 **Params**
@@ -378,7 +379,7 @@ api.getRoutes().forEach(route => console.log(route.path))
 // /api/v4/api/v4/qux
 ```
 
-### [.middleware](index.js#L519)
+### [.middleware](index.js#L518)
 > Active all routes that are defined. You can pass `opts` to pass different `prefix` for your routes. So you can have multiple prefixes with multiple routes using just one single router. You can also use multiple router instances. Pass `legacy: true` to `opts` and you will get generator function that can be used in Koa v1.
 
 * `returns` **{Function}**: modern [koa][] v2 middleware  
@@ -415,7 +416,7 @@ app.listen(4321, () => {
 })
 ```
 
-### [.legacyMiddleware](index.js#L579)
+### [.legacyMiddleware](index.js#L578)
 > Explicitly use this method when want to use the router on **Koa@1**, otherwise use [.middleware](#middleware) method!
 
 * `returns` **{GeneratorFunction}**: old [koa][] v1 middleware  
