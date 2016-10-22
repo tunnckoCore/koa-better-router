@@ -9,10 +9,11 @@
 
 'use strict'
 
-var request = require('supertest')
+let request = require('supertest')
 let test = require('mukla')
-let Koa = require('koa')
-var isGen = require('is-es6-generator-function')
+let koa1 = require('koa')
+let Koa = require('koa2')
+let isGen = require('is-es6-generator-function')
 let Router = require('./index')
 let router = Router()
 let app = new Koa()
@@ -344,5 +345,29 @@ test('should `.extend` throw TypeError if `router` is not correct instance', fun
   }
   test.throws(fixture, TypeError)
   test.throws(fixture, /expect `router` to be instance of KoaBetterRouter/)
+  done()
+})
+
+test('should work on koa@1 with `.legacyMiddleware`', function (done) {
+  let router = Router().addRoute('GET /is-it-working', (ctx, next) => {
+    ctx.body = 'yea, confirmed'
+    return next()
+  })
+  let app = koa1()
+
+  app.use(router.legacyMiddleware())
+  request(app.callback())
+    .get('/is-it-working')
+    .expect('yea, confirmed')
+    .expect(200, done)
+})
+
+test('should throw error on `koa@1` using `.middleware`', function (done) {
+  function fixture () {
+    let failing = Router().addRoute('GET /foo', () => {})
+    koa1().use(failing.middleware())
+  }
+  test.throws(fixture, Error)
+  test.throws(fixture, /requires a generator function/)
   done()
 })
