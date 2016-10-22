@@ -177,7 +177,6 @@ KoaBetterRouter.prototype.createRoute = function createRoute (method, route, fns
   return {
     prefix: this.options.prefix,
     path: prefixed,
-    pathname: route,
     route: route,
     match: this.route(prefixed),
     method: method,

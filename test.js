@@ -127,7 +127,6 @@ test('should `.createRoute` just return route object', function (done) {
   // route object
   test.strictEqual(route.prefix, '/api')
   test.strictEqual(route.path, '/api/users')
-  test.strictEqual(route.pathname, '/users')
   test.strictEqual(route.route, '/users')
   test.strictEqual(route.method, 'GET')
   test.strictEqual(typeof route.match, 'function')
