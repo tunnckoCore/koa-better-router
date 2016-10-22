@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/tunnckocore/koa-better-router/compare/v2.0.0...v2.0.1) (2016-10-22)
+
+
+### Bug Fixes
+
+* **deps/tests:** add missing `koa-compose[@3](https://github.com/3)` dep; add tests for koa[@1](https://github.com/1) ([2508e5e](https://github.com/tunnckocore/koa-better-router/commit/2508e5e)), closes [tunnckoCore/koa-rest-router#10](https://github.com/tunnckoCore/koa-rest-router/issues/10)
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/tunnckocore/koa-better-router/compare/v1.2.0...v2.0.0) (2016-10-22)
 
