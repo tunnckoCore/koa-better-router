@@ -26,8 +26,8 @@ ajv-keywords@^1.0.0:
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-1.1.1.tgz#02550bc605a3e576041565628af972e06c549d50"
 
 ajv@^4.7.0:
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.8.0.tgz#011df5c4a08edb29574a477269afb15a6f97abe5"
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.8.2.tgz#65486936ca36fea39a1504332a78bebd5d447bdc"
   dependencies:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
@@ -218,8 +218,8 @@ babel-types@^6.10.2, babel-types@^6.16.0:
     to-fast-properties "^1.0.1"
 
 babylon@^6.11.0, babylon@^6.8.1:
-  version "6.12.0"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.12.0.tgz#953e6202e58062f7f5041fc8037e4bd4e17140a9"
+  version "6.13.0"
+  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.13.0.tgz#58ed40dd2a8120612be5f318c2c0bedbebde4a0b"
 
 balanced-match@^0.4.1:
   version "0.4.2"
@@ -1535,8 +1535,8 @@ is-equal-shallow@^0.1.3:
     is-primitive "^2.0.0"
 
 is-error@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/is-error/-/is-error-2.2.0.tgz#2f4b67a631261274f6e5a7ef74c2a59a5edb24d1"
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/is-error/-/is-error-2.2.1.tgz#684a96d84076577c98f4cdb40c6d26a5123bf19c"
 
 is-es6-generator-function@^1.0.0:
   version "1.0.0"
@@ -2148,8 +2148,8 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
 nyc@^8.1.0:
-  version "8.3.1"
-  resolved "https://registry.yarnpkg.com/nyc/-/nyc-8.3.1.tgz#5761e96b0d5871844e8768e35d8c8a0b7fd6b67c"
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/nyc/-/nyc-8.3.2.tgz#a3b7a590fe1c6c4b2d0e3f24afe28b62bfafd745"
   dependencies:
     archy "^1.0.0"
     arrify "^1.0.1"
@@ -2851,8 +2851,8 @@ superagent@^2.0.0:
     readable-stream "^2.0.5"
 
 supertest@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/supertest/-/supertest-2.0.0.tgz#060e18edae56e3d62b95c6e9c4e2a5e4e50979ff"
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/supertest/-/supertest-2.0.1.tgz#a058081d788f1515d4700d7502881e6b759e44cd"
   dependencies:
     methods "1.x"
     superagent "^2.0.0"
@@ -3116,8 +3116,8 @@ yargs@^4.6.0:
     yargs-parser "^2.4.1"
 
 yargs@^6.0.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-6.2.0.tgz#9001048953def85495a2ce1dcfa690b7ab060fd1"
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-6.3.0.tgz#19c6dbb768744d571eb6ebae0c174cf2f71b188d"
   dependencies:
     camelcase "^3.0.0"
     cliui "^3.2.0"
