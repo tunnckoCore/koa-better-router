@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/tunnckocore/koa-better-router/compare/v1.2.0...v2.0.0) (2016-10-22)
+
+
+### Code Refactoring
+
+* **.middleware:** remove passing arguments to `.middleware` method ([0b14fda](https://github.com/tunnckocore/koa-better-router/commit/0b14fda)), closes [#9](https://github.com/tunnckocore/koa-better-router/issues/9)
+* **RouteObject:** remove `pathname` property, `route` make more sense ([6f9d90b](https://github.com/tunnckocore/koa-better-router/commit/6f9d90b))
+
+
+### BREAKING CHANGES
+
+* RouteObject: remove `routeObject.pathname`, use `routeObject.route` for just the route or
+
+`routeObject.path` for the combination of `routeObject.prefix` plus `routeObject.route`. For example
+
+route `/foo/bar` with prefix `/api` - `.route` is `/foo/bar` and `.path` is `/api/foo/bar`. Both
+
+`pathname` and `route` were the same.
+* .middleware: `.middleware` method no more accepts arguments - use `.legacyMiddleware` for
+
+legacy; create a new router for another prefix then use `.extend` method for grouping the router.
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/tunnckocore/koa-better-router/compare/v1.1.0...v1.2.0) (2016-10-19)
 
