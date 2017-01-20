@@ -546,7 +546,9 @@ KoaBetterRouter.prototype.middleware = function middleware () {
     }
     // called when request path not found on routes
     // ensure calling next middleware which is after the router
-    return next()
+    return typeof this.options.notFound === 'function'
+      ? this.options.notFound(ctx, next)
+      : next()
   }
 }
 

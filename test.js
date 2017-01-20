@@ -371,3 +371,32 @@ test('should throw error on `koa@1` using `.middleware`', function (done) {
   test.throws(fixture, /requires a generator function/)
   done()
 })
+
+test('should call options.notFound(ctx, next) if route not found', (done) => {
+  let router = Router({
+    notFound: (ctx, next) => {
+      test.strictEqual(ctx.route, undefined)
+      ctx.body = 'not found'
+      ctx.status = 404
+      return next()
+    }
+  })
+  router.get('/foo', (ctx, next) => {
+    ctx.body = 'foo route'
+    ctx.status = 200
+    return next()
+  })
+
+  let app = new Koa()
+  app.use(router.middleware())
+  app.use((ctx, next) => {
+    test.strictEqual(ctx.body, 'not found')
+    ctx.body = 'ok not found'
+    return next()
+  })
+
+  request(app.callback())
+    .get('/abc')
+    .expect('ok not found')
+    .expect(404, done)
+})
