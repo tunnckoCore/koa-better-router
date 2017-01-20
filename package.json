@@ -103,15 +103,26 @@
       ]
     },
     "reflinks": [
+      "appveyor-img",
+      "appveyor-url",
       "koa",
       "koa-convert",
+      "koa-rest-router",
       "koa-send",
+      "methods",
       "micromatch",
+      "path-match",
+      "path-to-regexp",
+      "recipe",
+      "short-meaningful-recipe-name",
       "through2",
       "use",
       "vinyl",
-      "methods",
-      "path-match"
+      "charlike",
+      "commitizen",
+      "standard-version",
+      "verb",
+      "verb-generate-readme"
     ],
     "lint": {
       "reflinks": true

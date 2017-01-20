@@ -11,8 +11,9 @@ let utils = require('./utils')
 
 /**
  * > Initialize `KoaBetterRouter` with optional `options`
- * which are directly passed to [path-match][] and in
- * addition we have one more - `prefix`.
+ * which are directly passed to [path-match][] and
+ * so to [path-to-regexp][] too. In addition we
+ * have two more - `prefix` and `notFound`.
  *
  * **Example**
  *
@@ -48,7 +49,8 @@ let utils = require('./utils')
  * })
  * ```
  *
- * @param {Object} `[options]` options passed to [path-match][] directly
+ * @param {Object} `[options]` options passed to [path-match][]/[path-to-regexp][] directly
+ * @param {Function} `[options.notFound]` if passed, called with `ctx, next` when route not found
  * @api public
  */
 
