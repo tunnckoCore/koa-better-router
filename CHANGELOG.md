@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/tunnckocore/koa-better-router/compare/v2.0.1...v2.1.0) (2017-01-20)
+
+
+### Bug Fixes
+
+* **style:** seems standard does not include max line length (80) ESLint rule ([7a1e8e7](https://github.com/tunnckocore/koa-better-router/commit/7a1e8e7))
+
+
+### Features
+
+* **options:** add notFound option to be called when route not found ([10f9eb7](https://github.com/tunnckocore/koa-better-router/commit/10f9eb7)), closes [#13](https://github.com/tunnckocore/koa-better-router/issues/13)
+
+
+### Performance Improvements
+
+* **middlewares:** convert middlewares on define time, not on routing time (#14) ([1ce2d4c](https://github.com/tunnckocore/koa-better-router/commit/1ce2d4c))
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/tunnckocore/koa-better-router/compare/v2.0.0...v2.0.1) (2016-10-22)
 
