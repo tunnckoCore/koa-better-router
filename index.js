@@ -174,13 +174,17 @@ KoaBetterRouter.prototype.createRoute = function createRoute (method, route, fns
   }
 
   let prefixed = utils.createPrefix(this.options.prefix, route)
+  middlewares = middlewares.map((fn) => {
+    return utils.isGenerator(fn) ? utils.convert(fn) : fn
+  })
+
   return {
     prefix: this.options.prefix,
     path: prefixed,
     route: route,
     match: this.route(prefixed),
     method: method,
-    middlewares: middlewares.map((fn) => utils.isGenerator(fn) ? utils.convert(fn) : fn)
+    middlewares: middlewares
   }
 }
 
