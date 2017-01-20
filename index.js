@@ -180,7 +180,7 @@ KoaBetterRouter.prototype.createRoute = function createRoute (method, route, fns
     route: route,
     match: this.route(prefixed),
     method: method,
-    middlewares: middlewares
+    middlewares: middlewares.map((fn) => utils.isGenerator(fn) ? utils.convert(fn) : fn)
   }
 }
 
@@ -531,9 +531,6 @@ KoaBetterRouter.prototype.middleware = function middleware () {
       }
 
       route.params = match
-      route.middlewares = route.middlewares.map((fn) => {
-        return utils.isGenerator(fn) ? utils.convert(fn) : fn
-      })
 
       // may be useful for the user
       ctx.route = route
