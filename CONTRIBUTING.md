@@ -1,8 +1,8 @@
-# Contributing to koa-rest-router
+# Contributing to koa-better-router
 
 :sparkles: Thanks for your contribution in advance! :tada:
 
-First and foremost, thank you! We appreciate that you want to contribute to `koa-rest-router`, your time is valuable, and your contributions mean a lot to us.
+First and foremost, thank you! We appreciate that you want to contribute to `koa-better-router`, your time is valuable, and your contributions mean a lot to us.
 
 ## What does "contributing" mean?
 
@@ -12,13 +12,13 @@ There are many ways to contribute to an open source project, including:
 - Feature requests
 - Submitting bug reports
 
-But you aren't limited to these things. Use your imagination. If you like a project, and you see something that can or should be improved, then you have an opportunity (but not an obligation) to contribute. 
+But you aren't limited to these things. Use your imagination. If you like a project, and you see something that can or should be improved, then you have an opportunity (but not an obligation) to contribute.
 
 ### Improve documentation
 
-As a user of `koa-rest-router` you're the perfect candidate to help us improve our documentation. Typo corrections, error fixes, better explanations, more examples, etc. Open issues for things that could be improved. Anything. Even improvements to this document.
+As a user of `koa-better-router` you're the perfect candidate to help us improve our documentation. Typo corrections, error fixes, better explanations, more examples, etc. Open issues for things that could be improved. Anything. Even improvements to this document.
 
-Use the [`docs` label](https://github.com/tunnckoCore/koa-rest-router/labels/docs) to find suggestions for what we'd love to see more documentation on.
+Use the [`docs` label](https://github.com/tunnckoCore/koa-better-router/labels/docs) to find suggestions for what we'd love to see more documentation on.
 
 ### Improve issues
 
@@ -26,9 +26,9 @@ Some issues are created with missing information, not reproducible, or plain inv
 
 ### Give feedback on issues
 
-We're always looking for more opinions on discussions in the issue tracker. It's a good opportunity to influence the future direction of AVA.
+We're always looking for more opinions on discussions in the issue tracker. It's a good opportunity to influence the future direction of `koa-better-router`.
 
-The [`question` label](https://github.com/tunnckoCore/koa-rest-router/labels/question) is a good place to find ongoing discussions.
+The [`question` label](https://github.com/tunnckoCore/koa-better-router/labels/question%20%2F%20discussion) is a good place to find ongoing discussions.
 
 
 ## Why should I contribute?
@@ -40,11 +40,11 @@ Here are just a few of the advantages of adding value to a project:
 - you gain the appreciation and respect of the project's maintainers and community
 - you gain valuable experience
 - you get noticed by job recruiters
-- you become more attrative to potential employers. 
+- you become more attrative to potential employers.
 
 ## Getting familiarized with a project
 
-Before you attempt to contribute to a project, take a moment to get familiarized with it. In most cases you can learn all you need to know within a couple of minutes. 
+Before you attempt to contribute to a project, take a moment to get familiarized with it. In most cases you can learn all you need to know within a couple of minutes.
 
 ### Required
 
@@ -52,7 +52,7 @@ The following items are a pre-requisite for contributing to any project. Avoid c
 
 - **Review the readme**: Oftentimes a project readme has links to documentation, advice on creating issues or bug reports, and so on.
 - **Read contributing guidelines**: look for a `CONTRIBUTING.md` file and, if one exists, read it in its entirety before creating issues or doing a pull request. Typically this is in the root of the project, but it might be in `.github/CONTRIBUTING.md`.
-- **Search issues**: Before creating bug reports, feature requests, or submitting issues of any kind, you should always search for existing issues (closed or open) that address the same thing. 
+- **Search issues**: Before creating bug reports, feature requests, or submitting issues of any kind, you should always search for existing issues (closed or open) that address the same thing.
 
 ### Recommended
 
@@ -65,17 +65,17 @@ The following items are a pre-requisite for contributing to any project. Avoid c
 
 ### Rationale
 
-The easier you make it for a maintainter or members of the community to react, the more likely it is for them to react quickly. 
+The easier you make it for a maintainter or members of the community to react, the more likely it is for them to react quickly.
 
 Like you, maintainers have to make decisions about where to spend their time. Not only within a given project, but oftentimes across multiple projects. If you're experiencing a bug and you want to make a report, bug reports that are clearly described and organized are much more likely to get addressed by the maintainers or member of the community.
 
-Providing these details up front will make everyone happy. If you don't provide these details, maintainers will have to ask you for them, which can be annoying for experienced maintainers who have had to ask for these crucial details many times. 
+Providing these details up front will make everyone happy. If you don't provide these details, maintainers will have to ask you for them, which can be annoying for experienced maintainers who have had to ask for these crucial details many times.
 
 ### The details
 
 Always include the following essential details in every bug report:
 
-1. **version**: what version of `koa-rest-router` were you using when you experienced the bug?
+1. **version**: what version of `koa-better-router` were you using when you experienced the bug?
 2. **description**: clear description of the bug, and minimum steps to reproduce it.
 3. **error messages**: paste any error messages into the issue or a [github gist](https://gist.github.com/), use [gfm code blocks][gfm].
 4. **code**: paste any code necessary for reproducing the bug and use [gfm code blocks][gfm] to wrap the code.
