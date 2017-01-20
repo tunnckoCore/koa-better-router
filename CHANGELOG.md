@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.1"></a>
+## [2.1.1](https://github.com/tunnckocore/koa-better-router/compare/v2.1.0...v2.1.1) (2017-01-20)
+
+
+### Bug Fixes
+
+* **contributing:** update ([04e6286](https://github.com/tunnckocore/koa-better-router/commit/04e6286)), closes [#10](https://github.com/tunnckocore/koa-better-router/issues/10)
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/tunnckocore/koa-better-router/compare/v2.0.1...v2.1.0) (2017-01-20)
 
