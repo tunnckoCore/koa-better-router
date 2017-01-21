@@ -60,6 +60,11 @@ function KoaBetterRouter (options) {
   }
 
   this.options = utils.extend({ prefix: '/' }, options)
+  if ('notFound' in this.options &&
+      typeof this.options.notFound !== 'function') {
+    throw new TypeError('option notFound can be only a function')
+  }
+
   this.route = utils.pathMatch(this.options)
   this.routes = []
 }
@@ -548,7 +553,7 @@ KoaBetterRouter.prototype.middleware = function middleware () {
     }
     // called when request path not found on routes
     // ensure calling next middleware which is after the router
-    return typeof this.options.notFound === 'function'
+    return this.options.notFound !== undefined
       ? this.options.notFound(ctx, next)
       : next()
   }
