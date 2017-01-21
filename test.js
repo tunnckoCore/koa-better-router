@@ -400,3 +400,14 @@ test('should call options.notFound(ctx, next) if route not found', (done) => {
     .expect('ok not found')
     .expect(404, done)
 })
+
+test('should throw on invalid options.notFound', (done) => {
+  function init () {
+    return Router({
+      notFound: 'invalid'
+    })
+  }
+
+  test.throws(init, Error)
+  done()
+})
