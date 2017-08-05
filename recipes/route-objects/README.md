@@ -74,7 +74,9 @@ Let's see usage of `.addRoutes` and `.createRoute`/`.getRoute` in second example
 let router = require('koa-better-router')()
 let extend = require('extend-shallow')
 
-let foo = router.createRoute('GET /foo', (ctx, next) => {})
+router.createRoute('GET /foo', (ctx, next) => {})
+
+let foo = router.getRoute('/foo')
 console.log(foo)
 
 let foo22 = extend({}, foo)
