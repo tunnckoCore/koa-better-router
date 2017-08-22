@@ -72,14 +72,11 @@ Let's see usage of `.addRoutes` and `.createRoute`/`.getRoute` in second example
 
 ```js
 let router = require('koa-better-router')()
-let extend = require('extend-shallow')
 
-router.createRoute('GET /foo', (ctx, next) => {})
-
-let foo = router.getRoute('/foo')
+let foo = router.createRoute('GET /foo', (ctx, next) => {})
 console.log(foo)
 
-let foo22 = extend({}, foo)
+let foo22 = router.getRoute('/foo')
 console.log(foo22) // same as above
 
 // let's change `foo22` a bit
