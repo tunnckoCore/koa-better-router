@@ -49,6 +49,9 @@
     "index.js",
     "utils.js"
   ],
+  "renovate": {
+    "extends": "tunnckocore"
+  },
   "keywords": [
     "better",
     "betterstack",
