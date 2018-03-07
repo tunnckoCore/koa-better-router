@@ -257,7 +257,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bel@^4.5.0:
+bel@4.5.1:
   version "4.5.1"
   resolved "https://registry.yarnpkg.com/bel/-/bel-4.5.1.tgz#fd857415359780ad195670bdd02766ab2f71f182"
   dependencies:
@@ -426,7 +426,7 @@ commander@^2.9.0:
   dependencies:
     graceful-readlink ">= 1.0.0"
 
-commitizen@^2.8.6:
+commitizen@2.9.5:
   version "2.9.5"
   resolved "https://registry.yarnpkg.com/commitizen/-/commitizen-2.9.5.tgz#f9605c8c1170eef86331676b5b5f12ab595bf498"
   dependencies:
@@ -662,7 +662,7 @@ core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-coveralls@^2.11.12:
+coveralls@2.11.15:
   version "2.11.15"
   resolved "https://registry.yarnpkg.com/coveralls/-/coveralls-2.11.15.tgz#37d3474369d66c14f33fa73a9d25cee6e099fca0"
   dependencies:
@@ -699,7 +699,7 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-cz-conventional-changelog@1.2.0, cz-conventional-changelog@^1.2.0:
+cz-conventional-changelog@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/cz-conventional-changelog/-/cz-conventional-changelog-1.2.0.tgz#2bca04964c8919b23f3fd6a89ef5e6008b31b3f8"
   dependencies:
@@ -1927,7 +1927,7 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
-koa-better-body@^3.0.2:
+koa-better-body@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/koa-better-body/-/koa-better-body-3.0.2.tgz#f4f7be7d7148422fa023c25771924422f51877fb"
   dependencies:
@@ -1963,7 +1963,7 @@ koa-is-json@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/koa-is-json/-/koa-is-json-1.0.0.tgz#273c07edcdcb8df6a2c1ab7d59ee76491451ec14"
 
-koa2@^2.0.0-alpha.7:
+koa2@2.0.0-alpha.7:
   version "2.0.0-alpha.7"
   resolved "https://registry.yarnpkg.com/koa2/-/koa2-2.0.0-alpha.7.tgz#78ff54aa0ed077f9ec48f0752b2eba6130e36948"
   dependencies:
@@ -1992,7 +1992,7 @@ koa2@^2.0.0-alpha.7:
     type-is "^1.5.5"
     vary "^1.0.0"
 
-koa@^1.2.4:
+koa@1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/koa/-/koa-1.2.4.tgz#6ef6d17a7bea8ec778a8572b55a0d0562e488654"
   dependencies:
@@ -2228,7 +2228,7 @@ ms@0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
 
-mukla@^0.4.1:
+mukla@0.4.8:
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/mukla/-/mukla-0.4.8.tgz#42f84d3e89ff4b6fa13dd4117b71615e656d4e7e"
   dependencies:
@@ -2282,7 +2282,7 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-nyc@^8.1.0:
+nyc@8.4.0:
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/nyc/-/nyc-8.4.0.tgz#660371c807caef0427fb9b0948f74180624ea6e4"
   dependencies:
@@ -2504,7 +2504,7 @@ pluralize@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-1.2.1.tgz#d1a21483fd22bb41e58a12fa3421823140897c45"
 
-pre-commit@^1.1.3:
+pre-commit@1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/pre-commit/-/pre-commit-1.2.2.tgz#dbcee0ee9de7235e57f79c56d7ce94641a69eec6"
   dependencies:
@@ -2892,7 +2892,7 @@ standard-engine@~5.2.0:
     minimist "^1.1.0"
     pkg-config "^1.0.1"
 
-standard-version@^2.4.0:
+standard-version@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/standard-version/-/standard-version-2.4.0.tgz#e6944b517458fd9b9334b26da189a980324fffde"
   dependencies:
@@ -2904,7 +2904,7 @@ standard-version@^2.4.0:
     semver "^5.1.0"
     yargs "^4.6.0"
 
-standard@^8.0.0:
+standard@8.6.0:
   version "8.6.0"
   resolved "https://registry.yarnpkg.com/standard/-/standard-8.6.0.tgz#635132be7bfb567c2921005f30f9e350e4752aad"
   dependencies:
@@ -2996,7 +2996,7 @@ superagent@^2.0.0:
     qs "^6.1.0"
     readable-stream "^2.0.5"
 
-supertest@^2.0.0:
+supertest@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/supertest/-/supertest-2.0.1.tgz#a058081d788f1515d4700d7502881e6b759e44cd"
   dependencies:
