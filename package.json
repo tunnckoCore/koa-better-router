@@ -30,7 +30,7 @@
     "path-match": "^1.2.4"
   },
   "devDependencies": {
-    "bel": "^6.0.0",
+    "bel": "^5.0.0",
     "commitizen": "^2.8.6",
     "coveralls": "^2.11.12",
     "cz-conventional-changelog": "^1.2.0",
