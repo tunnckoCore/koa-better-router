@@ -35,7 +35,7 @@
     "coveralls": "^2.11.12",
     "cz-conventional-changelog": "^1.2.0",
     "is-es6-generator-function": "^1.0.0",
-    "koa": "^2.0.0",
+    "koa": "^1.2.4",
     "koa-better-body": "^3.0.2",
     "koa2": "^2.0.0-alpha.7",
     "mukla": "^0.4.1",
