@@ -50,7 +50,8 @@
     "utils.js"
   ],
   "renovate": {
-    "extends": "tunnckocore"
+    "extends": "tunnckocore",
+    "ignoreDeps": ["koa"]
   },
   "keywords": [
     "better",
