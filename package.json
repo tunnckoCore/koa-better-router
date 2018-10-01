@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "bel": "^6.0.0",
-    "commitizen": "^2.8.6",
+    "commitizen": "^3.0.0",
     "coveralls": "^3.0.0",
     "cz-conventional-changelog": "^2.0.0",
     "is-es6-generator-function": "^1.0.0",
